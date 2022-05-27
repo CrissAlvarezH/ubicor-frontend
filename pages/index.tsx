@@ -19,4 +19,6 @@ const Home: NextPage = () => {
   )
 }
 
+// TODO fetch universities and if there are only one redirect to /[university_slug]
+
 export default Home
