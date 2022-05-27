@@ -5,15 +5,16 @@ import Image from "next/image"
 import { BuildingList } from "api_clients"
 
 
+const zoneColorSchemas: {[key: string]: string} = {
+    A: "green", B: "blue", C: "purple", D: "orange", E: "teal"
+}
+
 interface BuildingProps {
     building: BuildingList
 }
 
 const Building: FC<BuildingProps> = ({building}) => {
 
-    const zoneColorSchemas: {[key: string]: string} = {
-        A: "green", B: "blue", C: "purple", D: "orange", E: "teal"
-    }
 
     return (
         <Box shadow="md" background="white" borderWidth="1px" h="full" rounded="md">
