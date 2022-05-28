@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 export type PositionRetrieve = {
-    latitude: number;
-    longitude: number;
+    lat: number;
+    lng: number;
     id: number;
 };

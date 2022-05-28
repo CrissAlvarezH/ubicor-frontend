@@ -1,19 +1,23 @@
-import BuildingList from "components/BuildingList";
+import { UniversityService, UniversityRetrieve, UniversityList } from "api_clients"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { Box } from "@chakra-ui/react";
+import Map from "components/Map";
 
-import { UniversityService, UniversityRetrieve } from "./../../api_clients"
 
-
-interface Props {
+interface UniversityPageProps {
     university: UniversityRetrieve
 }
 
-
-const UniversityPage: NextPage<Props> = ({university}) => {
+const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
 
     return (
         <>
-            <BuildingList buildings={university.buildings}/>
+            {/* <BuildingList buildings={university.buildings}/> */}
+            <Box h="100vh">
+                <Map
+                    center={university.position}
+                    buildings={university.buildings}/>
+            </Box>
         </>
     )
 }
@@ -22,7 +26,7 @@ const UniversityPage: NextPage<Props> = ({university}) => {
 export const getStaticPaths: GetStaticPaths = async () => {
     const universities = await UniversityService.universityList()
 
-    const paths = universities.map((u: UniversityRetrieve) => ({params: {university_slug: u.slug}}))
+    const paths = universities.map((u: UniversityList) => ({params: {university_slug: u.slug}}))
 
     return {
         paths: paths,
@@ -31,8 +35,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
-    const { university_slug } = ctx.params as { university_slug: string }
+export const getStaticProps: GetStaticProps = async ({params}) => {
+    const { university_slug } = params as { university_slug: string }
     const university = await UniversityService.universityRetrieve(university_slug)
 
     return {
