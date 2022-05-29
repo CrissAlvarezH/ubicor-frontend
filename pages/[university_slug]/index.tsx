@@ -2,6 +2,7 @@ import { UniversityService, UniversityRetrieve, UniversityList } from "api_clien
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Box } from "@chakra-ui/react";
 import Map from "components/Map";
+import BuildingList from "components/BuildingList"
 
 
 interface UniversityPageProps {
