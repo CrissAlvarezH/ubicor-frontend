@@ -3,11 +3,7 @@ import { Badge, Box, Grid, GridItem, Heading, Text } from "@chakra-ui/react"
 import Image from "next/image"
 
 import { BuildingList } from "api_clients"
-
-
-const zoneColorSchemas: {[key: string]: string} = {
-    A: "green", B: "blue", C: "purple", D: "orange", E: "teal"
-}
+import { zoneColorSchemas } from "utils/styles"
 
 interface BuildingProps {
     building: BuildingList
