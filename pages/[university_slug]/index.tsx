@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Box, Text } from "@chakra-ui/react";
 import Map from "components/Map";
 import BuildingGrid from "components/BuildingList"
+import { useState } from "react";
 
 
 interface UniversityPageProps {
@@ -10,6 +11,7 @@ interface UniversityPageProps {
 }
 
 const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
+    const [buildingHover, setBuildingHover] = useState()
 
     return (
         <Box h="100vh">
@@ -21,12 +23,15 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
             </Box>
             <Box display="flex" overflowY="scroll" h="100%">
                 <Box flex={1} overflowY="scroll">
-                    <BuildingGrid buildings={university.buildings}/>
+                    <BuildingGrid 
+                        buildings={university.buildings}
+                        onBuildingHover={(b) => setBuildingHover(b)}/>
                 </Box>
                 <Box flex={1}>
                     <Map
                         center={university.position}
-                        buildings={university.buildings}/>
+                        buildings={university.buildings}
+                        buildingFocus={buildingHover}/>
                 </Box>
             </Box>
         </Box>

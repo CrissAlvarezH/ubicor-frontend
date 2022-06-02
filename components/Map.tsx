@@ -32,10 +32,11 @@ interface MapProps {
         lng: number;
     },
     buildings: BuildingList[]
+    buildingFocus: BuildingList|undefined
 }
 
 
-const Map: FC<MapProps> = ({center, buildings}: MapProps) => {
+const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
     const [buildingSelected, setBuildingSelected] = useState<BuildingList|null>(null)
 
     return (
@@ -57,7 +58,7 @@ const Map: FC<MapProps> = ({center, buildings}: MapProps) => {
                                     onClick={() => console.log("click to", buildingSelected.name)}
                                     w={56} h={48}
                                     pl={1} pt={1}
-                                    display="flex" cursor="pointer"
+                                    display="flex"
                                     flexDir="column">
                                     <Box position="relative" rounded="md" overflow="hidden" flex={1}>
                                         <Image src={getFirstImage(buildingSelected)} layout="fill" objectFit="cover" />
@@ -80,12 +81,12 @@ const Map: FC<MapProps> = ({center, buildings}: MapProps) => {
                                         setBuildingSelected(b)
                                     }}
                                     rounded="full" position="relative"
-                                    backgroundColor={buildingSelected == b ? "white" : "black"}
-                                    p={2} minW={7} textAlign="center" cursor="pointer"
-                                    zIndex={buildingSelected == b ? 10 : 1}
-                                    boxShadow={buildingSelected == b ? "dark-lg" : "base"}>
+                                    backgroundColor={buildingSelected == b || buildingFocus == b ? "white" : "black"}
+                                    p={buildingFocus == b ? 3 : 2} minW={7} textAlign="center" cursor="pointer"
+                                    zIndex={buildingSelected == b || buildingFocus == b ? 10 : 1}
+                                    boxShadow={buildingSelected == b || buildingFocus == b ? "dark-lg" : "base"}>
                                     <Text
-                                        color={buildingSelected == b ? "black" : "white"}>
+                                        color={buildingSelected == b || buildingFocus == b ? "black" : "white"}>
                                         {b.code}
                                     </Text>
                                 </Box>
