@@ -13,7 +13,7 @@ const Building: FC<BuildingProps> = ({building}) => {
 
 
     return (
-        <Box shadow="md" background="white" borderWidth="1px" h="full" rounded="md">
+        <Box shadow="md" background="white" borderWidth="1px" h="full" rounded="md" cursor="pointer">
             {/* Images */}
             <Grid
                 h={44}

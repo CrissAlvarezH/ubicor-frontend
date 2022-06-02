@@ -1,8 +1,8 @@
 import { UniversityService, UniversityRetrieve, UniversityList } from "api_clients"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import Map from "components/Map";
-import BuildingList from "components/BuildingList"
+import BuildingGrid from "components/BuildingList"
 
 
 interface UniversityPageProps {
@@ -12,14 +12,24 @@ interface UniversityPageProps {
 const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
 
     return (
-        <>
-            {/* <BuildingList buildings={university.buildings}/> */}
-            <Box h="100vh">
-                <Map
-                    center={university.position}
-                    buildings={university.buildings}/>
+        <Box h="100vh">
+            <Box shadow="md" bg="white">
+                <Box p={3}>
+                    <Text fontWeight="bold">Universidad de Cordoba</Text>
+                </Box>
+                <Box p="1px" bg="gray.200" />
             </Box>
-        </>
+            <Box display="flex" overflowY="scroll" h="100%">
+                <Box flex={1} overflowY="scroll">
+                    <BuildingGrid buildings={university.buildings}/>
+                </Box>
+                <Box flex={1}>
+                    <Map
+                        center={university.position}
+                        buildings={university.buildings}/>
+                </Box>
+            </Box>
+        </Box>
     )
 }
 

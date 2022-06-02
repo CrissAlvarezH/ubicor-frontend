@@ -14,3 +14,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: green;
+  border-radius: 24px;
+}
+                        

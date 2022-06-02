@@ -57,7 +57,7 @@ const Map: FC<MapProps> = ({center, buildings}: MapProps) => {
                                     onClick={() => console.log("click to", buildingSelected.name)}
                                     w={56} h={48}
                                     pl={1} pt={1}
-                                    display="flex"
+                                    display="flex" cursor="pointer"
                                     flexDir="column">
                                     <Box position="relative" rounded="md" overflow="hidden" flex={1}>
                                         <Image src={getFirstImage(buildingSelected)} layout="fill" objectFit="cover" />
@@ -75,10 +75,13 @@ const Map: FC<MapProps> = ({center, buildings}: MapProps) => {
                                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                                 getPixelPositionOffset={(oW: number, oH: number) => ({x: 0 - oW/2, y: 0})}>
                                 <Box 
-                                    onClick={() => setBuildingSelected(b)}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setBuildingSelected(b)
+                                    }}
                                     rounded="full" position="relative"
                                     backgroundColor={buildingSelected == b ? "white" : "black"}
-                                    p={2} minW={7} textAlign="center"
+                                    p={2} minW={7} textAlign="center" cursor="pointer"
                                     zIndex={buildingSelected == b ? 10 : 1}
                                     boxShadow={buildingSelected == b ? "dark-lg" : "base"}>
                                     <Text

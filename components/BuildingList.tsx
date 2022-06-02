@@ -6,10 +6,10 @@ import Building from "./Building"
 
 
 interface BuildingListProps {
-    buildings: [BuildingList]
+    buildings: BuildingList[]
 }
 
-const BuildingList: FC<BuildingListProps> = ({buildings}) => {
+const BuildingGrid: FC<BuildingListProps> = ({buildings}) => {
     return (
         <Box display="flex" justifyContent="center">
             <Grid
@@ -30,4 +30,4 @@ const BuildingList: FC<BuildingListProps> = ({buildings}) => {
     )
 }
 
-export default BuildingList
+export default BuildingGrid
