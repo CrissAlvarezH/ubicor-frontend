@@ -3,7 +3,8 @@ import { GoogleMap, LoadScript, InfoWindow, OverlayView, Marker } from '@react-g
 import { FC, useState } from "react"
 import { BuildingList } from 'api_clients';
 import { getFirstImage } from 'utils/data';
-import { Box, Text, Heading } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
+import { BaseMarker, SelectedMarker } from "./Marker";
 
 
 const containerStyle = {
@@ -75,21 +76,14 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
                                 key={b.id} position={b.position}
                                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                                 getPixelPositionOffset={(oW: number, oH: number) => ({x: 0 - oW/2, y: 0})}>
-                                <Box 
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        setBuildingSelected(b)
-                                    }}
-                                    rounded="full" position="relative"
-                                    backgroundColor={buildingSelected == b || buildingFocus == b ? "white" : "black"}
-                                    p={buildingFocus == b ? 3 : 2} minW={7} textAlign="center" cursor="pointer"
-                                    zIndex={buildingSelected == b || buildingFocus == b ? 10 : 1}
-                                    boxShadow={buildingSelected == b || buildingFocus == b ? "dark-lg" : "base"}>
-                                    <Text
-                                        color={buildingSelected == b || buildingFocus == b ? "black" : "white"}>
-                                        {b.code}
-                                    </Text>
-                                </Box>
+                                    
+                                {
+                                    b == buildingSelected || b == buildingFocus ? (
+                                        <SelectedMarker building={b} onSelected={setBuildingSelected}/>
+                                    ): (
+                                        <BaseMarker building={b} onSelected={setBuildingSelected}/>
+                                    )
+                                }
                             </OverlayView>
                         ))
                     } 

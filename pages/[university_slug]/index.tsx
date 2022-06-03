@@ -14,8 +14,8 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
     const [buildingHover, setBuildingHover] = useState()
 
     return (
-        <Box h="100vh">
-            <Box shadow="md" bg="white">
+        <Box h="100vh" display="flex" flexDir="column">
+            <Box shadow="md" bg="white" flexShrink={0}>
                 <Box p={3}>
                     <Text fontWeight="bold">Universidad de Cordoba</Text>
                 </Box>
