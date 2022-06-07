@@ -1,5 +1,7 @@
 import { Box, Grid, GridItem } from "@chakra-ui/react"
 import { BuildingList } from "api_clients"
+import Link from "next/link"
+import { useRouter } from "next/router"
 import { FC } from "react"
 
 import Building from "./Building"
@@ -11,6 +13,8 @@ interface BuildingListProps {
 }
 
 const BuildingGrid: FC<BuildingListProps> = ({buildings, onBuildingHover}) => {
+    const router = useRouter()
+
     return (
         <Box display="flex" justifyContent="center">
             <Grid
@@ -24,7 +28,9 @@ const BuildingGrid: FC<BuildingListProps> = ({buildings, onBuildingHover}) => {
                         <GridItem key={b.id}
                             onMouseEnter={() => onBuildingHover(b)}
                             onMouseLeave={() => onBuildingHover(null)}>
-                            <Building building={b} />
+                            <Link href={`${router.asPath}/${b.id}`}><a>
+                                <Building building={b} />
+                            </a></Link>
                         </GridItem>
                     ))
                 }

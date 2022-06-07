@@ -5,6 +5,7 @@ import ImageSlider from "components/ImageSlider"
 import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve } from "api_clients";
 import { zoneColorSchemas } from "utils/styles"
 import BuildingFloorList from "components/BuildingFloorList"
+import { useRouter } from "next/router";
 
 
 interface BuildingPageProps {
@@ -12,6 +13,7 @@ interface BuildingPageProps {
 }
 
 const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps) => {
+    const router = useRouter()
     const imageUrls = building.building_images.map((i) => i.image.original)
 
     return (
@@ -19,7 +21,9 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
             {/* Header */}
             <Box backgroundColor="teal.500" px={2} py={2} shadow="base">
                 <Container maxW="7xl" p={0} display="flex" alignItems="center">
-                    <IconButton aria-label="Back" colorScheme="teal" icon={<ArrowBackIcon w={6} h={6}/>}/>
+                    <IconButton
+                        onClick={() => router.back()}
+                        aria-label="Back" colorScheme="teal" icon={<ArrowBackIcon w={6} h={6}/>}/>
                     <Heading px={1} size="md" as="h2" color="white">Bloque {building.code}</Heading>
                 </Container>
             </Box>

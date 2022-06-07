@@ -5,6 +5,8 @@ import { BuildingList } from 'api_clients';
 import { getFirstImage } from 'utils/data';
 import { Box, Heading } from '@chakra-ui/react';
 import { BaseMarker, SelectedMarker } from "./Marker";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 
 const containerStyle = {
@@ -38,6 +40,7 @@ interface MapProps {
 
 
 const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
+    const router = useRouter()
     const [buildingSelected, setBuildingSelected] = useState<BuildingList|null>(null)
 
     return (
@@ -55,17 +58,19 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
                             <InfoWindow
                                 position={buildingSelected.position}
                                 onCloseClick={() => setBuildingSelected(null)}>
-                                <Box 
-                                    onClick={() => console.log("click to", buildingSelected.name)}
-                                    w={56} h={48}
-                                    pl={1} pt={1}
-                                    display="flex"
-                                    flexDir="column">
-                                    <Box position="relative" rounded="md" overflow="hidden" flex={1}>
-                                        <Image src={getFirstImage(buildingSelected)} layout="fill" objectFit="cover" />
+                                <Link href={`${router.asPath}/${buildingSelected.id}`}><a>
+                                    <Box 
+                                        onClick={() => console.log("click to", buildingSelected.name)}
+                                        w={56} h={48}
+                                        pl={1} pt={1}
+                                        display="flex"
+                                        flexDir="column">
+                                        <Box position="relative" rounded="md" overflow="hidden" flex={1}>
+                                            <Image src={getFirstImage(buildingSelected)} layout="fill" objectFit="cover" />
+                                        </Box>
+                                        <Heading as='h3' size='base' pt={1} color="black">{buildingSelected.name}</Heading>
                                     </Box>
-                                    <Heading as='h3' size='base' pt={1} color="black">{buildingSelected.name}</Heading>
-                                </Box>
+                                </a></Link>
                             </InfoWindow>
                         )
                     }
