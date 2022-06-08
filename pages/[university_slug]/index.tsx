@@ -1,9 +1,11 @@
 import { UniversityService, UniversityRetrieve, UniversityList } from "api_clients"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, HStack, IconButton, Text, useDisclosure } from "@chakra-ui/react";
 import Map from "components/Map";
 import BuildingGrid from "components/BuildingList"
 import { useState } from "react";
+import { SearchIcon } from "@chakra-ui/icons";
+import BuildingsAndRoomsSearchModal from "components/SearchModal";
 
 
 interface UniversityPageProps {
@@ -13,14 +15,25 @@ interface UniversityPageProps {
 const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
     const [buildingHover, setBuildingHover] = useState()
     const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure()
+    const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
 
     return (
         <Box h="100vh" display="flex" flexDir="column">
+            <BuildingsAndRoomsSearchModal 
+                buildings={university.buildings} onClose={onCloseSearch} isOpen={showSearch}/>
+
             {/* Header */}
             <Box shadow="md" bg="white" flexShrink={0}>
-                <Box p={3}>
-                    <Text fontWeight="bold">Universidad de Cordoba</Text>
-                </Box>
+                <HStack px={3} py={1} justifyContent="space-between">
+                    <Box>
+                        <Text fontWeight="bold">{university.name}</Text>
+                    </Box>
+
+                    <IconButton 
+                        onClick={() => toggleSearch()}
+                        variant="ghost" aria-label="Search" icon={<SearchIcon />}/>
+                </HStack>
+
                 <Box p="1px" bg="gray.200" />
             </Box>
 

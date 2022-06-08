@@ -129,4 +129,25 @@ export class RoomsService {
         });
     }
 
+    /**
+     * List Standalone
+     * @param search
+     * @returns RoomRetrieve Successful Response
+     * @throws ApiError
+     */
+    public static roomsListStandalone(
+        search?: string,
+    ): CancelablePromise<Array<RoomRetrieve>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/rooms/',
+            query: {
+                'search': search,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
 }
