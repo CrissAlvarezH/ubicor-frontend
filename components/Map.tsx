@@ -66,7 +66,7 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
                                         display="flex"
                                         flexDir="column">
                                         <Box position="relative" rounded="md" overflow="hidden" flex={1}>
-                                            <Image src={getFirstImage(buildingSelected)} layout="fill" objectFit="cover" />
+                                            <Image src={getFirstImage(buildingSelected)} layout="fill" objectFit="cover" alt="Building marker"/>
                                         </Box>
                                         <Heading as='h3' size='base' pt={1} color="black">{buildingSelected.name}</Heading>
                                     </Box>

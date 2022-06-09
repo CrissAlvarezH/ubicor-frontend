@@ -1,4 +1,4 @@
-import { UniversityService, UniversityRetrieve, UniversityList } from "api_clients"
+import { UniversityService, UniversityRetrieve, UniversityList, BuildingList } from "api_clients"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Box, Button, HStack, IconButton, Text, useDisclosure } from "@chakra-ui/react";
 import Map from "components/Map";
@@ -13,7 +13,7 @@ interface UniversityPageProps {
 }
 
 const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
-    const [buildingHover, setBuildingHover] = useState()
+    const [buildingHover, setBuildingHover] = useState<BuildingList>()
     const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure()
     const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
 

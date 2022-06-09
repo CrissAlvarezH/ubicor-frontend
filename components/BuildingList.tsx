@@ -9,7 +9,7 @@ import Building from "./Building"
 
 interface BuildingListProps {
     buildings: BuildingList[]
-    onBuildingHover: (b: BuildingList|null) => void
+    onBuildingHover: (b: BuildingList|undefined) => void
 }
 
 const BuildingGrid: FC<BuildingListProps> = ({buildings, onBuildingHover}) => {
@@ -27,7 +27,7 @@ const BuildingGrid: FC<BuildingListProps> = ({buildings, onBuildingHover}) => {
                     buildings.map((b: BuildingList) => (
                         <GridItem key={b.id}
                             onMouseEnter={() => onBuildingHover(b)}
-                            onMouseLeave={() => onBuildingHover(null)}>
+                            onMouseLeave={() => onBuildingHover(undefined)}>
                             <Link href={`${router.asPath}/${b.id}`}><a>
                                 <Building building={b} />
                             </a></Link>

@@ -49,7 +49,7 @@ const ImageSlider: FC<ImageSliderProps> = ({images}: ImageSliderProps) => {
                     {
                         images.map((img: string, i: number) => (
                             <Box key={i} h={64} backgroundColor="red">
-                                <Image src={img} objectFit="cover" w="100%" h="100%"/>
+                                <Image src={img} objectFit="cover" w="100%" h="100%" alt="building image"/>
                             </Box>
                         ))
                     }

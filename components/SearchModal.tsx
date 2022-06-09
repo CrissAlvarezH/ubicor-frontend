@@ -58,7 +58,7 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
         )
 
         setFilteredBuildings(filtered)
-    }, [search])
+    }, [buildings, search])
 
     return (
         <Modal onClose={onClose} isOpen={isOpen} size="xl">
@@ -69,7 +69,9 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
                         {/* Search */}
                         <HStack width="100%">
                             <InputGroup>
-                                <InputLeftElement children={<SearchIcon />}/>
+                                <InputLeftElement>
+                                    <SearchIcon />
+                                </InputLeftElement>
                                 <Input 
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
@@ -92,7 +94,7 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
                                     <VStack width="100%" px={2} align="start" divider={<StackDivider />}>
                                         {
                                             filteredBuildings.map((b: BuildingList) => (
-                                                <HStack>
+                                                <HStack key={b.id}>
                                                     <Badge 
                                                         px={2} py={.5} rounded="full"
                                                         bg="teal.400" color="white">
@@ -123,7 +125,7 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
                                     <VStack width="100%" px={2} align="start" spacing={2.5} divider={<StackDivider />}>
                                         {
                                             filteredRooms.map((r: RoomRetrieve) => (
-                                                <HStack>
+                                                <HStack key={r.id}>
                                                     <Badge 
                                                         px={2} py={.5} rounded="full"
                                                         bg="blue.400" color="white">{r.code}</Badge>
