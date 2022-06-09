@@ -63,8 +63,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         })
     )
 
-    console.log("paths", paths.flat())
-
     return {
         paths: paths.flat(),
         fallback: false
