@@ -21,6 +21,10 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Pass env var to yarn build to generate static pages
+ARG API_BASE_URL
+ENV API_BASE_URL ${API_BASE_URL}
+
 RUN yarn build
 
 # If using npm comment out above and use below instead
