@@ -6,6 +6,9 @@ const nextConfig = {
   },
   experimental: {
     outputStandalone: true
+  },
+  env: {
+    API_BASE_URL: process.env.API_BASE_URL
   }
 }
 

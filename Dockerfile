@@ -22,6 +22,9 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 # Pass env var to yarn build to generate static pages
+ARG BUILD_TIME_API_BASE_URL
+ENV BUILD_TIME_API_BASE_URL ${BUILD_TIME_API_BASE_URL}
+# Pas API_BASE_URL that its use in server and client rendering, but no in the build
 ARG API_BASE_URL
 ENV API_BASE_URL ${API_BASE_URL}
 
