@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["picsum.photos"]
+    domains: ["picsum.photos", "localhost", "api.ubicor.alvarezcristian.com"]
   },
   experimental: {
     outputStandalone: true
