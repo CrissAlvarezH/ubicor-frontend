@@ -35,15 +35,15 @@ const Building: FC<BuildingProps> = ({building}: BuildingProps) => {
                 roundedTop="md"
                 overflow="hidden"
                 >
-                <GridItem rowSpan={2} colSpan={4} bg='tomato' position="relative">
+                <GridItem rowSpan={2} colSpan={4} bg="blackAlpha.400" position="relative">
                     <Image src={getImageUrl(building.building_images, 0)} layout="fill" objectFit="cover" alt="Building"/>
                 </GridItem>
 
-                <GridItem rowSpan={1} colSpan={2} bg='papayawhip' position="relative">
+                <GridItem rowSpan={1} colSpan={2} bg="blackAlpha.400" position="relative">
                     <Image src={getImageUrl(building.building_images, 1)} layout="fill" objectFit="cover" alt="Building"/>
                 </GridItem>
 
-                <GridItem rowSpan={1} colSpan={2} bg='tomato' position="relative">
+                <GridItem rowSpan={1} colSpan={2} bg="blackAlpha.400" position="relative">
                     <Image src={getImageUrl(building.building_images, 2)} layout="fill" objectFit="cover" alt="Building"/>
                 </GridItem>
             </Grid>
