@@ -2,6 +2,7 @@ import { Box, Text, Image } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import SwipeableViews from "react-swipeable-views"
 import { FC, useState } from 'react';
+import { OpenAPI } from 'api_clients';
 
 
 interface ImageSliderProps {
@@ -49,7 +50,7 @@ const ImageSlider: FC<ImageSliderProps> = ({images}: ImageSliderProps) => {
                     {
                         images.map((img: string, i: number) => (
                             <Box key={i} h={64} backgroundColor="red">
-                                <Image src={img} objectFit="cover" w="100%" h="100%" alt="building image"/>
+                                <Image src={OpenAPI.BASE + img} objectFit="cover" w="100%" h="100%" alt="building image"/>
                             </Box>
                         ))
                     }
