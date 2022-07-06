@@ -1,6 +1,7 @@
 import { CloseIcon, SearchIcon } from "@chakra-ui/icons"
 import { ModalOverlay, Modal, ModalContent, ModalBody, Box, VStack, HStack, Input, Text, InputLeftElement, InputGroup, IconButton, Divider, Badge, StackDivider, Spinner } from "@chakra-ui/react"
 import { BuildingList, CancelablePromise, RoomRetrieve, RoomsService } from "api_clients"
+import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 
 
@@ -12,6 +13,8 @@ interface SearchModalProps {
 
 
 const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose, isOpen}: SearchModalProps) => {
+    const router = useRouter()
+
     const [search, setSearch] = useState<string>("")
     const [isLoadingRooms, setIsLoadingRooms] = useState(false)
     const [filteredRooms, setFilteredRooms] = useState<RoomRetrieve[]>([])
@@ -60,6 +63,10 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
         setFilteredBuildings(filtered)
     }, [buildings, search])
 
+    const onClickItem = (building_id: number) => {
+        router.push(router.asPath + "/" + building_id) 
+    }
+
     return (
         <Modal onClose={onClose} isOpen={isOpen} size="xl">
             <ModalOverlay />
@@ -94,7 +101,8 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
                                     <VStack width="100%" px={2} align="start" divider={<StackDivider />}>
                                         {
                                             filteredBuildings.map((b: BuildingList) => (
-                                                <HStack key={b.id}>
+                                                <HStack key={b.id}
+                                                    onClick={e => onClickItem(b.id)}>
                                                     <Badge 
                                                         px={2} py={.5} rounded="full"
                                                         bg="teal.400" color="white">
@@ -125,7 +133,8 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
                                     <VStack width="100%" px={2} align="start" spacing={2.5} divider={<StackDivider />}>
                                         {
                                             filteredRooms.map((r: RoomRetrieve) => (
-                                                <HStack key={r.id}>
+                                                <HStack key={r.id}
+                                                    onClick={e => onClickItem(r.building_id)}>
                                                     <Badge 
                                                         px={2} py={.5} rounded="full"
                                                         bg="blue.400" color="white">{r.code}</Badge>
