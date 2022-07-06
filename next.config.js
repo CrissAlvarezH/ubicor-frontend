@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  crossOrigin: "anonymous",
   images: {
     domains: ["localhost", "api.ubicor.alvarezcristian.com", "host.docker.internal"]
   },
