@@ -23,7 +23,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
                 buildings={university.buildings} onClose={onCloseSearch} isOpen={showSearch}/>
 
             {/* Header */}
-            <Box shadow="md" bg="white" flexShrink={0}>
+            <Box shadow="md" bg="white" h={12} flexShrink={0}>
                 <HStack px={3} py={1} justifyContent="space-between">
                     <Box>
                         <Text fontWeight="bold">{university.name}</Text>
@@ -66,7 +66,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
 
                 <Box 
                     display={showMap ? "block" : "none"}
-                    h="100%" position="absolute" top={0} bottom={0} left={0} right={0}>
+                    position="fixed" top={12} bottom={0} left={0} right={0}>
                     <Map
                         center={university.position}
                         buildings={university.buildings}
@@ -78,7 +78,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
                     bg={showMap ? "white" : "black"}
                     transition="1.3s"
                     colorScheme="black"
-                    position="absolute" bottom={6} left="50%" right="50%"
+                    position="fixed" bottom={6} left="50%" right="50%"
                     w="50%" transform="translate(-50%, -50%)"
                     rounded="full" px={4} py={2} boxShadow="dark-lg">
                     <Text textAlign="center" color={showMap ? "black" : "white"}>
