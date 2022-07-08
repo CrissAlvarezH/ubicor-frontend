@@ -62,8 +62,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
             <Box display={{base: "block", md: "none"}} 
                 flex={1} position="relative">
 
-                <Box display={showMap ? "none" : "block"}
-                    h="100%" overflowY="scroll" pt={12}>
+                <Box h="100%" overflowY="scroll" pt={12}>
                     <BuildingGrid 
                         buildings={university.buildings}
                         onBuildingHover={(b) => setBuildingHover(b)}/>
