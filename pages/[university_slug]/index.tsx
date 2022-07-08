@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from 
 import { Box, Button, HStack, IconButton, Text, useDisclosure } from "@chakra-ui/react";
 import Map from "components/Map";
 import BuildingGrid from "components/BuildingList"
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { SearchIcon } from "@chakra-ui/icons";
 import BuildingsAndRoomsSearchModal from "components/SearchModal";
 import { useRouter } from "next/router";
@@ -15,15 +15,39 @@ interface UniversityPageProps {
 
 const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
     const router = useRouter()
+    const mapfocus = useRef<string|undefined>()
 
     const [buildingHover, setBuildingHover] = useState<BuildingList>()
     const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure()
     const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
 
     useEffect(() => {
-        if ("mapfocus" in router.query && !showMap)
-            toggleShowMap()
+        if ("mapfocus" in router.query)
+            if (!showMap) toggleShowMap() // show map with mapfocus building marker
+        else
+            if (showMap) mapfocus.current = undefined // event: user close infowindown, drop map focus
     }, [router.query])
+
+    useEffect(() => {
+        if (showMap) {
+            // when show map set mapfocus query param on url as mapfocus.current,
+            // it was saved (on else statement of this effect) when map is hidden
+            // and there was a info window open
+            if (mapfocus.current) {
+                router.push(
+                    `/${router.query.university_slug}/?mapfocus=${mapfocus.current}`,
+                    undefined, {shallow: true}
+                )
+            }
+        } else {
+            // drop mapfocus query param from url if map is hidden 
+            // and save value for when the user show map again
+            if (!showMap && "mapfocus" in router.query) {
+                mapfocus.current = router.query.mapfocus?.toString()
+                router.push(`/${router.query.university_slug}`, undefined, {shallow: true})
+            }
+        }
+    }, [showMap])
 
     return (
         <Box h="100vh" display="flex" flexDir="column">
