@@ -17,6 +17,7 @@ const containerStyle = {
 const mapOptions = {
     fullscreenControl: false,
     disableDefaultUI: true,
+    gestureHandling: "greedy",
     styles: [
         {
             featureType: "poi",
