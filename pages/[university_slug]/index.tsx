@@ -23,7 +23,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
                 buildings={university.buildings} onClose={onCloseSearch} isOpen={showSearch}/>
 
             {/* Header */}
-            <Box shadow="md" bg="white" h={12} flexShrink={0}>
+            <Box position="fixed" top={0} w="100%" zIndex={100} shadow="md" bg="white" h={12} flexShrink={0}>
                 <HStack px={3} py={1} justifyContent="space-between">
                     <Box>
                         <Text fontWeight="bold">{university.name}</Text>
@@ -38,27 +38,32 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
             </Box>
 
             {/* Body on Desktop*/}
-            <Box display={{base: "none", md: "flex"}} overflowY="scroll" h="100%">
-                <Box flex={1} overflowY="scroll">
+            <Box display={{base: "none", md: "flex"}}>
+                <Box flex={1} pt={12} maxW="850px">
                     <BuildingGrid 
                         buildings={university.buildings}
                         onBuildingHover={(b) => setBuildingHover(b)}/>
                 </Box>
-                <Box flex={1}>
-                    <Map
-                        center={university.position}
-                        buildings={university.buildings}
-                        buildingFocus={buildingHover}/>
+                <Box flex={1} position="relative">
+                    <Box 
+                        position="sticky" 
+                        top={0} left={0} right={0} h="100vh" 
+                        zIndex={1} pt={12}>
+                        <Map
+                            center={university.position}
+                            buildings={university.buildings}
+                            buildingFocus={buildingHover}/>
+                    </Box>
                 </Box>
             </Box>
 
 
             {/* Body on Mobile*/}
             <Box display={{base: "block", md: "none"}} 
-                overflowY="scroll" flex={1} position="relative">
+                flex={1} position="relative">
 
                 <Box display={showMap ? "none" : "block"}
-                    h="100%" overflowY="scroll">
+                    h="100%" overflowY="scroll" pt={12}>
                     <BuildingGrid 
                         buildings={university.buildings}
                         onBuildingHover={(b) => setBuildingHover(b)}/>

@@ -19,7 +19,6 @@ const BuildingGrid: FC<BuildingListProps> = ({buildings, onBuildingHover}) => {
         <Box display="flex" justifyContent="center">
             <Grid
                 w="100%"
-                maxW="1094px"
                 p={2}
                 gap={2}
                 templateColumns="repeat(auto-fill, minmax(297px, 1fr))">
