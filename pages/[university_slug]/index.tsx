@@ -77,7 +77,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
                 </Box>
 
                 <Box 
-                    display={showMap ? "block" : "none"}
+                    display={showMap ? "block" : "none"} bg="gray.100"
                     position="fixed" top={12} bottom={0} left={0} right={0}>
                     <Map
                         center={university.position}
