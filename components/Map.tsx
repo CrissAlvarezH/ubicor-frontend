@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { GoogleMap, LoadScript, InfoWindow, OverlayView, Marker } from '@react-google-maps/api';
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { BuildingList } from 'api_clients';
 import { getFirstImage } from 'utils/data';
 import { Box, Heading } from '@chakra-ui/react';
@@ -44,6 +44,25 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
     const router = useRouter()
     const [buildingSelected, setBuildingSelected] = useState<BuildingList|null>(null)
 
+    useEffect(() => {
+        if ("mapfocus" in router.query && buildingSelected == null) {
+            const building = buildings.find(b => b.id.toString() === router.query.mapfocus)
+            if (building) setBuildingSelected(building)
+        }
+    }, [router.query])
+
+    useEffect(() => {
+        // every time that building selected change this is printed on url
+        // to when the page is refreshed it come back to focus the same building
+        let path = undefined
+        if (buildingSelected)
+            path = `/${router.query.university_slug}?mapfocus=${buildingSelected.id}`
+        else
+            path = `/${router.query.university_slug}`
+        
+        router.push(path, undefined, {shallow: true})
+    }, [buildingSelected])
+
     return (
         <LoadScript
             googleMapsApiKey="AIzaSyDwEz0p4iWO4txzwR6rsCpYbEU5kVt0oD4">
@@ -59,7 +78,7 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
                             <InfoWindow
                                 position={buildingSelected.position}
                                 onCloseClick={() => setBuildingSelected(null)}>
-                                <Link href={`${router.asPath}/${buildingSelected.id}`}><a>
+                                <Link href={`/${router.query.university_slug}/${buildingSelected.id}`}><a>
                                     <Box 
                                         onClick={() => console.log("click to", buildingSelected.name)}
                                         w={56} h={48}
