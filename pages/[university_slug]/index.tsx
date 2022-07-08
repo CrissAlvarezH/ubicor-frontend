@@ -1,11 +1,12 @@
 import { UniversityService, UniversityRetrieve, UniversityList, BuildingList } from "api_clients"
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from "next";
 import { Box, Button, HStack, IconButton, Text, useDisclosure } from "@chakra-ui/react";
 import Map from "components/Map";
 import BuildingGrid from "components/BuildingList"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchIcon } from "@chakra-ui/icons";
 import BuildingsAndRoomsSearchModal from "components/SearchModal";
+import { useRouter } from "next/router";
 
 
 interface UniversityPageProps {
@@ -13,9 +14,16 @@ interface UniversityPageProps {
 }
 
 const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
+    const router = useRouter()
+
     const [buildingHover, setBuildingHover] = useState<BuildingList>()
     const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure()
     const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
+
+    useEffect(() => {
+        if ("mapfocus" in router.query && !showMap)
+            toggleShowMap()
+    }, [router.query])
 
     return (
         <Box h="100vh" display="flex" flexDir="column">
