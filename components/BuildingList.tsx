@@ -27,7 +27,7 @@ const BuildingGrid: FC<BuildingListProps> = ({buildings, onBuildingHover}) => {
                         <GridItem key={b.id}
                             onMouseEnter={() => onBuildingHover(b)}
                             onMouseLeave={() => onBuildingHover(undefined)}>
-                            <Link href={`/${router.query.university_slug}/${b.id}`}><a>
+                            <Link href={`/${router.query.university_slug}/buildings/${b.id}`}><a>
                                 <Building building={b} />
                             </a></Link>
                         </GridItem>

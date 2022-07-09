@@ -59,7 +59,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         universities.map(async (u: UniversityList) => {
             const buildings = await BuildingsService.buildingsList(u.slug)
             return buildings.map((b: BuildingList) => 
-                ({params: {university_slug: u.slug, building_id: b.id.toString()}}))
+                ({params: {university_slug: u.slug, building_id: b.id.toString(), focus_on: "buildings"}}))
         })
     )
 

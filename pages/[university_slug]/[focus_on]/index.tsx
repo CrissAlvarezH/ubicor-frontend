@@ -11,41 +11,36 @@ import { useRouter } from "next/router";
 
 interface UniversityPageProps {
     university: UniversityRetrieve
+    focus_on: "buildings" | "map"
 }
 
-const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityPageProps) => {
+const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: UniversityPageProps) => {
     const router = useRouter()
     const mapfocus = useRef<string|undefined>()
 
     const [buildingHover, setBuildingHover] = useState<BuildingList>()
-    const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure()
+    const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure({defaultIsOpen: focus_on === "map"})
     const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
 
     useEffect(() => {
-        if ("mapfocus" in router.query)
-            if (!showMap) toggleShowMap() // show map with mapfocus building marker
-        else
-            if (showMap) mapfocus.current = undefined // event: user close infowindown, drop map focus
+        // event: user close infowindown, drop map focus
+        if (!("b" in router.query) && showMap)
+            mapfocus.current = undefined 
     }, [router.query])
 
     useEffect(() => {
         if (showMap) {
-            // when show map set mapfocus query param on url as mapfocus.current,
-            // it was saved (on else statement of this effect) when map is hidden
-            // and there was a info window open
-            if (mapfocus.current) {
-                router.push(
-                    `/${router.query.university_slug}/?mapfocus=${mapfocus.current}`,
-                    undefined, {shallow: true}
-                )
-            }
+            let path = `/${router.query.university_slug}/map`
+            if (mapfocus.current)
+                path = path + `?b=${mapfocus.current}`
+            
+            router.push(path, undefined, {shallow: true})
         } else {
-            // drop mapfocus query param from url if map is hidden 
+            // drop b query param from url if map is hidden 
             // and save value for when the user show map again
-            if (!showMap && "mapfocus" in router.query) {
-                mapfocus.current = router.query.mapfocus?.toString()
-                router.push(`/${router.query.university_slug}`, undefined, {shallow: true})
-            }
+            if ("b" in router.query)  mapfocus.current = router.query.b?.toString()
+
+            router.push(`/${router.query.university_slug}/buildings`, undefined, {shallow: true})
         }
     }, [showMap])
 
@@ -130,7 +125,9 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university}: UniversityP
 export const getStaticPaths: GetStaticPaths = async () => {
     const universities = await UniversityService.universityList()
 
-    const paths = universities.map((u: UniversityList) => ({params: {university_slug: u.slug}}))
+    // create paths focus on buildings and focus on map
+    let paths = universities.map((u: UniversityList) => ({params: {university_slug: u.slug, focus_on: "buildings"}}))
+    paths = [...paths, ...universities.map((u: UniversityList) => ({params: {university_slug: u.slug, focus_on: "map"}}))]
 
     return {
         paths: paths,
@@ -140,12 +137,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
-    const { university_slug } = params as { university_slug: string }
+    const { university_slug, focus_on } = params as { university_slug: string, focus_on: string }
     const university = await UniversityService.universityRetrieve(university_slug)
 
     return {
         props: {
-            university
+            university,
+            focus_on
         }
     }
 }

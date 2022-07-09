@@ -45,8 +45,8 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
     const [buildingSelected, setBuildingSelected] = useState<BuildingList|null>(null)
 
     useEffect(() => {
-        if ("mapfocus" in router.query && buildingSelected == null) {
-            const building = buildings.find(b => b.id.toString() === router.query.mapfocus)
+        if ("b" in router.query && buildingSelected == null) {
+            const building = buildings.find(b => b.id.toString() === router.query.b)
             if (building) setBuildingSelected(building)
         }
     }, [router.query])
@@ -56,11 +56,12 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
         // to when the page is refreshed it come back to focus the same building
         let path = undefined
         if (buildingSelected)
-            path = `/${router.query.university_slug}?mapfocus=${buildingSelected.id}`
+            path = `/${router.query.university_slug}/map?b=${buildingSelected.id}`
         else
-            path = `/${router.query.university_slug}`
-        
-        router.push(path, undefined, {shallow: true})
+            if (router.query.focus_on === "map") // if the map is showing
+                path = `/${router.query.university_slug}/map`
+     
+        if (path) router.push(path, undefined, {shallow: true})
     }, [buildingSelected])
 
     return (
@@ -78,9 +79,8 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
                             <InfoWindow
                                 position={buildingSelected.position}
                                 onCloseClick={() => setBuildingSelected(null)}>
-                                <Link href={`/${router.query.university_slug}/${buildingSelected.id}`}><a>
+                                <Link href={`/${router.query.university_slug}/buildings/${buildingSelected.id}`}><a>
                                     <Box 
-                                        onClick={() => console.log("click to", buildingSelected.name)}
                                         w={56} h={48}
                                         pl={1} pt={1}
                                         display="flex"

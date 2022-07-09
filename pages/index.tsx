@@ -18,7 +18,7 @@ const Home: NextPage<HomePageProps> = ({universities}: HomePageProps) => {
   useEffect(() => {
     if (universities.length == 1) {
       const university = universities[0]
-      router.replace("/" + university.slug)
+      router.replace("/" + university.slug + "/buildings")
     }
 
     setInterval(() => setIsLoadingRedirect(false), 1000)
