@@ -3,7 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   crossOrigin: "anonymous",
   images: {
-    domains: ["localhost", "api.ubicor.alvarezcristian.com", "host.docker.internal"]
+    domains: [
+      "localhost", "api.ubicor.alvarezcristian.com", "host.docker.internal",
+      "avatars.githubusercontent.com"
+    ]
   },
   experimental: {
     outputStandalone: true,
