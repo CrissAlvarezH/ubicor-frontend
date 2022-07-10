@@ -1,7 +1,8 @@
 import { SearchIcon } from "@chakra-ui/icons"
-import { Box, Button, HStack, IconButton, Text } from "@chakra-ui/react"
+import { Box, Button, HStack, IconButton, Spinner, Text } from "@chakra-ui/react"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
+import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { ProfileIcon } from "./Icons"
 
@@ -9,11 +10,12 @@ import { ProfileIcon } from "./Icons"
 interface NavBarProps {
     title: string
     onSearchClick: () => void
-    onProfileClick: () => void
 }
 
 
-const NavBar: FC<NavBarProps> = ({title, onSearchClick, onProfileClick}) => {
+const NavBar: FC<NavBarProps> = ({title, onSearchClick}) => {
+    const router = useRouter()
+
     const {data, status} = useSession()
 
     const [profileImage, setProfileImage] = useState<string|undefined>()
@@ -36,14 +38,18 @@ const NavBar: FC<NavBarProps> = ({title, onSearchClick, onProfileClick}) => {
                         variant="ghost" aria-label="Search" icon={<SearchIcon />}/>
 
                     {
-                        profileImage ? (
-                            <Button rounded="full" colorScheme="blackAlpha" overflow="hidden">
-                                <Image layout="fill" objectFit="cover" src={profileImage}/>
-                            </Button>
-                        ) : (
-                            <IconButton
-                                onClick={() => onProfileClick()}
-                                variant="ghost" aria-label="Profile" icon={<ProfileIcon />}/>
+                        status === "loading" ? <Box px={2}><Spinner /></Box> : (
+                            profileImage ? (
+                                <Button
+                                    onClick={() => router.push("/profile")}
+                                    rounded="full" colorScheme="blackAlpha" overflow="hidden">
+                                    <Image layout="fill" objectFit="cover" src={profileImage}/>
+                                </Button>
+                            ) : (
+                                <IconButton
+                                    onClick={() => router.push("/profile")}
+                                    variant="ghost" aria-label="Profile" icon={<ProfileIcon />}/>
+                            )
                         )
                     }
                 </HStack>

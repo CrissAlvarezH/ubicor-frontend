@@ -2,10 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserRetrieve = {
-    id: number;
+export type OAuthUserCreate = {
     full_name: string;
     email: string;
-    scopes: Array<string>;
-    is_active: boolean;
+    password?: string;
+    provider: string;
 };

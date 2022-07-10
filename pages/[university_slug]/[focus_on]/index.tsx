@@ -55,8 +55,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: U
             <BuildingsAndRoomsSearchModal 
                 buildings={university.buildings} onClose={onCloseSearch} isOpen={showSearch}/>
 
-            <NavBar title={university.name} onSearchClick={toggleSearch} 
-                onProfileClick={() => signIn()}/>
+            <NavBar title={university.name} onSearchClick={toggleSearch} />
 
             {/* Body on Desktop*/}
             <Box display={{base: "none", md: "flex"}}>
