@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 export type OAuthUserCreate = {
-    full_name: string;
+    full_name?: string;
     email: string;
     password?: string;
-    provider: string;
+    provider?: string;
 };
