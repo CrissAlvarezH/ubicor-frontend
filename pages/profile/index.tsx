@@ -1,5 +1,5 @@
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader,
-        AlertDialogOverlay, Box, Button, Divider, Heading, Spinner, Text, useDisclosure, VStack } from "@chakra-ui/react"
+        AlertDialogOverlay, Box, Button, Divider, Heading, HStack, Spinner, Text, useDisclosure, VStack } from "@chakra-ui/react"
 import BackNavBar from "components/BackNavBar"
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
@@ -64,17 +64,12 @@ const ProfilePage = () => {
 
                 <Divider/>
 
-                <Box py={5} px={9} maxW="800px">
-                    <Heading>¿Quieres llevar ubicor a tu universidad?</Heading>
-                    <VStack py={5} align="start">
-                        <Text>Contactanos para habilitarte la posibilidad de agregar los bloques y salones de tu universidad</Text>
-                        <Text pt={2}>
-                            Envianos un correo con el nombre de tu universidad y donde se encuentra ubicada, asegurate de estar
-                            registrado y podrás agregar tu universidad a Ubicor
-                        </Text>
-                        <Text pt={2}>Contactanos al </Text>
-                        <Text fontWeight="bold">ubicor.contacto@gmail.com</Text>
-                    </VStack>
+                <Box py={5} px={2} maxW="800px">
+                    <Text fontSize="md">¿Quieres contactarnos?</Text>
+                    <HStack flexWrap="wrap" py={1} align="start">
+                        <Text fontSize="sm">Envianos un correo a</Text>
+                        <Text fontSize="sm" fontWeight="bold">ubicor.contacto@gmail.com</Text>
+                    </HStack>
                 </Box>
             </VStack>
         </>

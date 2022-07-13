@@ -35,7 +35,14 @@ export const authOptions: NextAuthOptions = {
         }),
         GoogleProvider({
             clientId: process.env.AUTH_GOOGLE_ID || "",
-            clientSecret: process.env.AUTH_GOOGLE_SECRET || ""
+            clientSecret: process.env.AUTH_GOOGLE_SECRET || "",
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
         }),
         GithubProvider({
             clientId: process.env.AUTH_GITHUB_ID,
