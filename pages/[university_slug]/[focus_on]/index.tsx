@@ -1,12 +1,13 @@
 import { UniversityService, UniversityRetrieve, UniversityList, BuildingList } from "api_clients"
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, NextPage } from "next";
-import { Box, Button, HStack, IconButton, Text, useDisclosure } from "@chakra-ui/react";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
 import Map from "components/Map";
 import BuildingGrid from "components/BuildingList"
-import { useEffect, useReducer, useRef, useState } from "react";
-import { SearchIcon } from "@chakra-ui/icons";
+import { useEffect, useRef, useState } from "react";
 import BuildingsAndRoomsSearchModal from "components/SearchModal";
 import { useRouter } from "next/router";
+import NavBar from "components/NavBar";
+import { signIn, useSession } from "next-auth/react";
 
 
 interface UniversityPageProps {
@@ -15,12 +16,17 @@ interface UniversityPageProps {
 }
 
 const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: UniversityPageProps) => {
+    const session = useSession()
     const router = useRouter()
     const mapfocus = useRef<string|undefined>()
 
     const [buildingHover, setBuildingHover] = useState<BuildingList>()
     const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure({defaultIsOpen: focus_on === "map"})
     const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
+
+    useEffect(() => {
+        console.log("session", session)
+    }, [session])
 
     useEffect(() => {
         // event: user close infowindown, drop map focus
@@ -49,20 +55,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: U
             <BuildingsAndRoomsSearchModal 
                 buildings={university.buildings} onClose={onCloseSearch} isOpen={showSearch}/>
 
-            {/* Header */}
-            <Box position="fixed" top={0} w="100%" zIndex={100} shadow="md" bg="white" h={12} flexShrink={0}>
-                <HStack px={3} py={1} justifyContent="space-between">
-                    <Box>
-                        <Text fontWeight="bold">{university.name}</Text>
-                    </Box>
-
-                    <IconButton 
-                        onClick={() => toggleSearch()}
-                        variant="ghost" aria-label="Search" icon={<SearchIcon />}/>
-                </HStack>
-
-                <Box p="1px" bg="gray.200" />
-            </Box>
+            <NavBar title={university.name} onSearchClick={toggleSearch} />
 
             {/* Body on Desktop*/}
             <Box display={{base: "none", md: "flex"}}>

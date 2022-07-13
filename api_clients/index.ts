@@ -15,6 +15,7 @@ export type { BuildingList } from './models/BuildingList';
 export type { BuildingRetrieve } from './models/BuildingRetrieve';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { ImageRetrieve } from './models/ImageRetrieve';
+export type { OAuthUserCreate } from './models/OAuthUserCreate';
 export type { PositionCreate } from './models/PositionCreate';
 export type { PositionRetrieve } from './models/PositionRetrieve';
 export type { RoomCreate } from './models/RoomCreate';
