@@ -11,13 +11,14 @@ import * as Yup from "yup"
 
 
 const LoginFormSchema = Yup.object().shape({
-    username: Yup.string().required().email(),
+    email: Yup.string().required().email(),
     password: Yup.string().required()
 })
 
 
 const LoginPage = () => {
     const handleOnLogin = async (provider: string, data?: SignInOptions) => {
+        console.log("login", data)
         await signIn(provider, data)
     }
 
@@ -27,13 +28,13 @@ const LoginPage = () => {
             <Box display="flex" justifyContent="center">
                 <VStack align="stretch" flex={1} maxW="600px" pt={{"base": 5, "md": 10}} pb={10} px={5}>
                     <Formik
-                        initialValues={{username: "", password: ""}}
+                        initialValues={{email: "", password: ""}}
                         validationSchema={LoginFormSchema}
                         onSubmit={(data) => handleOnLogin("credentials", data)}>
                         {({isSubmitting}) => (
                             <Form>
                                 <InputField 
-                                    name="username"
+                                    name="email"
                                     placeholder="correo electronico"
                                     label="Correo electrónico"/>
 
