@@ -7,7 +7,13 @@ import { GetServerSideProps } from "next"
 import { unstable_getServerSession } from "next-auth"
 import { signIn, SignInOptions } from "next-auth/react"
 import { authOptions } from "pages/api/auth/[...nextauth]"
+import * as Yup from "yup"
 
+
+const LoginFormSchema = Yup.object().shape({
+    username: Yup.string().required().email(),
+    password: Yup.string().required()
+})
 
 
 const LoginPage = () => {
@@ -21,11 +27,12 @@ const LoginPage = () => {
             <VStack align="stretch" pt={5} pb={10} px={5}>
                 <Formik
                     initialValues={{username: "", password: ""}}
+                    validationSchema={LoginFormSchema}
                     onSubmit={(data) => handleOnLogin("credentials", data)}>
                     {({isSubmitting}) => (
                         <Form>
                             <InputField 
-                                name="email"
+                                name="username"
                                 placeholder="correo electronico"
                                 label="Correo electrónico"/>
 
