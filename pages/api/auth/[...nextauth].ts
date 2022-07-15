@@ -1,4 +1,5 @@
 import { AuthService, Body_Auth_login, OAuthUserCreate } from "api_clients"
+import axios from "axios"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
@@ -75,7 +76,10 @@ export const authOptions: NextAuthOptions = {
                 token.scopes = user.scopes
             }
 
-            return token
+            if (account?.provider === "google")
+                return refreshAccessToken(token)
+            else
+                return token
         },
         async session({ session, token, user }) {
             console.log("callback session", { session }, { token }, { user })
@@ -83,6 +87,44 @@ export const authOptions: NextAuthOptions = {
             return session
         }
     }
+}
+
+/**
+ * Takes a token, and returns a new token with updated
+ * `accessToken` and `accessTokenExpires`. If an error occurs,
+ * returns the old token and an error property
+ */
+async function refreshAccessToken(token: any) {
+  try {
+    const url =
+      "https://oauth2.googleapis.com/token?" +
+      new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID || "",
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || "",
+        grant_type: "refresh_token",
+        refresh_token: token.refreshToken,
+      })
+
+    const refreshedTokens: any = await axios({
+        url: url,
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"}}
+    )
+
+    return {
+      ...token,
+      accessToken: refreshedTokens.access_token,
+      accessTokenExpires: Date.now() + refreshedTokens.expires_at * 1000,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
+    }
+  } catch (error) {
+    console.log(error)
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    }
+  }
 }
 
 export default NextAuth(authOptions)
