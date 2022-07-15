@@ -24,57 +24,59 @@ const LoginPage = () => {
     return (
         <>
             <BackNavBar title="Login"/>
-            <VStack align="stretch" pt={5} pb={10} px={5}>
-                <Formik
-                    initialValues={{username: "", password: ""}}
-                    validationSchema={LoginFormSchema}
-                    onSubmit={(data) => handleOnLogin("credentials", data)}>
-                    {({isSubmitting}) => (
-                        <Form>
-                            <InputField 
-                                name="username"
-                                placeholder="correo electronico"
-                                label="Correo electrónico"/>
+            <Box display="flex" justifyContent="center">
+                <VStack align="stretch" flex={1} maxW="600px" pt={{"base": 5, "md": 10}} pb={10} px={5}>
+                    <Formik
+                        initialValues={{username: "", password: ""}}
+                        validationSchema={LoginFormSchema}
+                        onSubmit={(data) => handleOnLogin("credentials", data)}>
+                        {({isSubmitting}) => (
+                            <Form>
+                                <InputField 
+                                    name="username"
+                                    placeholder="correo electronico"
+                                    label="Correo electrónico"/>
 
-                            <Box pt={2}>
-                                <InputField
-                                    name="password"
-                                    placeholder="contraseña"
-                                    label="Contraseña"
-                                    type="password" />
-                            </Box>
-                            
-                            <Button 
-                                w="100%" mt={10} type="submit" isLoading={isSubmitting} colorScheme="teal">
-                                Entrar
-                            </Button>
+                                <Box pt={2}>
+                                    <InputField
+                                        name="password"
+                                        placeholder="contraseña"
+                                        label="Contraseña"
+                                        type="password" />
+                                </Box>
+                                
+                                <Button 
+                                    w="100%" mt={10} type="submit" isLoading={isSubmitting} colorScheme="teal">
+                                    Entrar
+                                </Button>
 
-                            <HStack justifyContent="center" py={3}>
-                                <Text color="gray.600">Si no tienes cuenta, puedes</Text>
-                                <Text color="blue" py={2}>registrate</Text>
-                            </HStack>
-                        </Form>
-                    )}
-                </Formik>
+                                <HStack justifyContent="center" py={3}>
+                                    <Text color="gray.600">Si no tienes cuenta, puedes</Text>
+                                    <Text color="blue" py={2}>registrate</Text>
+                                </HStack>
+                            </Form>
+                        )}
+                    </Formik>
 
-                <HStack pb={6}>
-                    <Divider/>
-                    <Text flexShrink={0} color="gray.600">o si lo prefires, puedes</Text>
-                    <Divider />
-                </HStack>
+                    <HStack pb={6}>
+                        <Divider/>
+                        <Text flexShrink={0} color="gray.600">o si lo prefires, puedes</Text>
+                        <Divider />
+                    </HStack>
 
-                <VStack spacing={4} align="stretch" pb={10}>
-                    <Button onClick={() => handleOnLogin("google")}
-                        borderColor="gray.300" borderWidth={2}
-                        iconSpacing={3} leftIcon={<GoogleIcon />}>
-                        Ingresar con Google
-                    </Button>
-                    <Button onClick={() => handleOnLogin("github")}
-                        bg="black" color="white" iconSpacing={3} leftIcon={<GitHubIcon />}>
-                        Ingresar con GitHub
-                    </Button>
+                    <VStack spacing={4} align="stretch" pb={10}>
+                        <Button onClick={() => handleOnLogin("google")}
+                            borderColor="gray.300" borderWidth={2}
+                            iconSpacing={3} leftIcon={<GoogleIcon />}>
+                            Ingresar con Google
+                        </Button>
+                        <Button onClick={() => handleOnLogin("github")}
+                            bg="black" color="white" iconSpacing={3} leftIcon={<GitHubIcon />}>
+                            Ingresar con GitHub
+                        </Button>
+                    </VStack>
                 </VStack>
-            </VStack>
+            </Box>
         </>
     )
 }
