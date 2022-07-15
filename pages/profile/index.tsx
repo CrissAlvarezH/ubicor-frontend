@@ -14,7 +14,7 @@ const ProfilePage = () => {
 
     return (
         <>
-            <BackNavBar title="Perfil"/>
+            <BackNavBar title="Perfil" to={router.query.p?.toString() || "/"}/>
 
             <OnLogoutAlarmDialog
                 isOpen={isLogoutAlarmOpen} onClose={onToggleLogoutAlarm}
@@ -114,5 +114,6 @@ const OnLogoutAlarmDialog: FC<OnLogoutAlarmDialogProps> = ({isOpen, onClose, onY
         </>
     )
 }
+
 
 export default ProfilePage

@@ -57,7 +57,6 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async jwt({ token, account }) {
-            console.log("callback jwt", { token }, { account })
             if (account && token.name && token.email) {
 
                 const userBody: OAuthUserCreate = {
@@ -82,7 +81,6 @@ export const authOptions: NextAuthOptions = {
                 return token
         },
         async session({ session, token, user }) {
-            console.log("callback session", { session }, { token }, { user })
             session.scopes = token.scopes
             return session
         }

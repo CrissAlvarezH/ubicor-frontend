@@ -77,8 +77,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
     const {p = '/', error} = ctx.query;
 
-    console.log({query: ctx.query})
-
     if ( session ) {
         return {
             redirect: {

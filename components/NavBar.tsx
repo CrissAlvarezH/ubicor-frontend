@@ -41,13 +41,13 @@ const NavBar: FC<NavBarProps> = ({title, onSearchClick}) => {
                         status === "loading" ? <Box px={2}><Spinner /></Box> : (
                             profileImage ? (
                                 <Button
-                                    onClick={() => router.push("/profile")}
+                                    onClick={() => router.push(`/profile?p=${router.asPath}`)}
                                     rounded="full" colorScheme="blackAlpha" overflow="hidden">
                                     <Image layout="fill" objectFit="cover" src={profileImage}/>
                                 </Button>
                             ) : (
                                 <IconButton
-                                    onClick={() => router.push("/profile")}
+                                    onClick={() => router.push(`/profile?p=${router.asPath}`)}
                                     variant="ghost" aria-label="Profile" icon={<ProfileIcon />}/>
                             )
                         )
