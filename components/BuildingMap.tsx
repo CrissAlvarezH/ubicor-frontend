@@ -40,7 +40,7 @@ interface MapProps {
 }
 
 
-const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
+const BuildingMap: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
     const router = useRouter()
     const [buildingSelected, setBuildingSelected] = useState<BuildingList|null>(null)
 
@@ -66,13 +66,14 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
 
     return (
         <LoadScript
-            googleMapsApiKey="AIzaSyDwEz0p4iWO4txzwR6rsCpYbEU5kVt0oD4">
+            googleMapsApiKey={process.env.GOOGLE_MAPS_API_KEY || ""}>
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={center}
                     zoom={17}
                     onClick={() => setBuildingSelected(null)}
-                    options={mapOptions}>
+                    options={mapOptions}
+                    onCenterChanged={() => console.log("building map on center changed", center)}>
                     
                     {
                         buildingSelected  && (
@@ -118,4 +119,4 @@ const Map: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps) => {
     )
 }
 
-export default Map
+export default BuildingMap
