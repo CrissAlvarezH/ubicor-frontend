@@ -1,18 +1,17 @@
-import { Box, Button, HStack, IconButton, Modal, ModalContent, ModalOverlay, StackDivider, Text, useDisclosure, VStack } from "@chakra-ui/react"
+import { Box, Button, Divider, HStack, IconButton, Modal, ModalContent, ModalOverlay, StackDivider, Text, useDisclosure, VStack } from "@chakra-ui/react"
 import BackNavBar from "components/BackNavBar"
 import InputField from "components/InputField"
 import { Form, Formik } from "formik"
 import { useRouter } from "next/router"
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useRef, useState } from "react"
 import { SimpleMap, MapWrapper } from "components/SimpleMap"
-import { AddIcon } from "@chakra-ui/icons"
+import BuildingZoneSelector from "components/BuildingZoneSelector"
 
 
 
 const CreateBuildingPage = () => {
     const router = useRouter()
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
-
     
     return (
         <MapWrapper>
@@ -21,7 +20,7 @@ const CreateBuildingPage = () => {
             <Box display="flex" justifyContent="center">
                 <VStack align="stretch" flex={1} maxW="600px" pt={{"base": 5, "md": 10}} px={5}>
                     <Formik
-                        initialValues={{name: "", code: "", position: undefined}}
+                        initialValues={{name: "", code: "", position: undefined, zone: undefined}}
                         onSubmit={(data) => console.log(data)}>
                         {({isSubmitting, values, setFieldValue}) => (
                             <Form>
@@ -44,15 +43,11 @@ const CreateBuildingPage = () => {
 
                                 {/* Zones */}
                                 <Box mt={3}>
-                                    <Text pb={2} fontWeight="semibold">Zona</Text>
-                                    <HStack 
-                                        divider={<StackDivider/>} spacing={0}
-                                        borderWidth={1.5} rounded="md" borderColor="gray.200">
-                                        <HStack flex={1}>
-
-                                        </HStack>
-                                        <IconButton variant="ghost" aria-label="Agregar zona" icon={<AddIcon />}/>
-                                    </HStack>
+                                    <Text fontWeight="semibold" pb={2}>Zona</Text>
+                                    <BuildingZoneSelector 
+                                        university_slug={router.query.university_slug?.toString()}
+                                        zoneSelected={values.zone}
+                                        onZoneSelected={(z) => setFieldValue("zone", z)}/>
                                 </Box>
 
                                 {/* Location */}
@@ -66,6 +61,7 @@ const CreateBuildingPage = () => {
                                         </Button>
                                     </HStack>
                                         
+                                    <Divider />
                                     {
                                         values.position ? (
                                             <Box h={52}>
