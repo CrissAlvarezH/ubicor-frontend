@@ -13,6 +13,8 @@ export type { BuildingCreate } from './models/BuildingCreate';
 export type { BuildingImageRetrieve } from './models/BuildingImageRetrieve';
 export type { BuildingList } from './models/BuildingList';
 export type { BuildingRetrieve } from './models/BuildingRetrieve';
+export type { BuildingZoneCreate } from './models/BuildingZoneCreate';
+export type { BuildingZoneRetrieve } from './models/BuildingZoneRetrieve';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { ImageRetrieve } from './models/ImageRetrieve';
 export type { OAuthUserCreate } from './models/OAuthUserCreate';
@@ -30,5 +32,6 @@ export type { ValidationError } from './models/ValidationError';
 
 export { AuthService } from './services/AuthService';
 export { BuildingsService } from './services/BuildingsService';
+export { BuildingZonesService } from './services/BuildingZonesService';
 export { RoomsService } from './services/RoomsService';
 export { UniversityService } from './services/UniversityService';

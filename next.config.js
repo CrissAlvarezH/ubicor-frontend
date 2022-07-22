@@ -13,7 +13,8 @@ const nextConfig = {
     scrollRestoration: true
   },
   env: {
-    API_BASE_URL: process.env.API_BASE_URL
+    API_BASE_URL: process.env.API_BASE_URL,
+    GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
   }
 }
 

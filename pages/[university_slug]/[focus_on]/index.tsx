@@ -1,7 +1,7 @@
 import { UniversityService, UniversityRetrieve, UniversityList, BuildingList } from "api_clients"
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
-import Map from "components/Map";
+import BuildingMap from "components/BuildingMap";
 import BuildingGrid from "components/BuildingList"
 import { useEffect, useRef, useState } from "react";
 import BuildingsAndRoomsSearchModal from "components/SearchModal";
@@ -57,7 +57,8 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: U
             <BuildingsAndRoomsSearchModal 
                 buildings={university.buildings} onClose={onCloseSearch} isOpen={showSearch}/>
 
-            <NavBar title={university.name} onSearchClick={toggleSearch} />
+            <NavBar title={university.name} onSearchClick={toggleSearch} 
+                onAddClick={() => router.push(`/${router.query.university_slug}/create-building`)}/>
 
             {/* Body on Desktop*/}
             <Box display={{base: "none", md: "flex"}}>
@@ -71,7 +72,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: U
                         position="sticky" 
                         top={0} left={0} right={0} h="100vh" 
                         zIndex={1} pt={12}>
-                        <Map
+                        <BuildingMap
                             center={university.position}
                             buildings={university.buildings}
                             buildingFocus={buildingHover}/>
@@ -93,7 +94,7 @@ const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: U
                 <Box 
                     display={showMap ? "block" : "none"} bg="gray.100"
                     position="fixed" top={12} bottom={0} left={0} right={0}>
-                    <Map
+                    <BuildingMap
                         center={university.position}
                         buildings={university.buildings}
                         buildingFocus={buildingHover}/>
