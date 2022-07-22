@@ -1,4 +1,4 @@
-import { Box, Button, Divider, HStack, IconButton, Modal, ModalContent, ModalOverlay, StackDivider, Text, useDisclosure, VStack } from "@chakra-ui/react"
+import { Box, Button, Divider, HStack, IconButton, Modal, ModalContent, ModalOverlay, StackDivider, Text, useDisclosure, useToast, VStack } from "@chakra-ui/react"
 import BackNavBar from "components/BackNavBar"
 import InputField from "components/InputField"
 import { Form, Formik } from "formik"
@@ -6,12 +6,32 @@ import { useRouter } from "next/router"
 import { FC, useRef, useState } from "react"
 import { SimpleMap, MapWrapper } from "components/SimpleMap"
 import BuildingZoneSelector from "components/BuildingZoneSelector"
+import * as Yup from "yup"
+import { BuildingsService } from "api_clients"
 
+
+const CreateBuildingFormSchema = Yup.object().shape({
+    name: Yup.string().required(),
+    code: Yup.string().required(),
+    position: Yup.object().required(),
+    zone: Yup.object().required()
+})
 
 
 const CreateBuildingPage = () => {
+    const toast = useToast()
     const router = useRouter()
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
+
+    const handleCreateBuilding = async (data: any) => {
+        const body = {...data, zone: data.zone.name}
+        try {
+            const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
+            console.log(resp)
+        } catch (error) {
+            console.log("ERROR", error)
+        }
+    }
     
     return (
         <MapWrapper>
@@ -21,8 +41,12 @@ const CreateBuildingPage = () => {
                 <VStack align="stretch" flex={1} maxW="600px" pt={{"base": 5, "md": 10}} px={5}>
                     <Formik
                         initialValues={{name: "", code: "", position: undefined, zone: undefined}}
-                        onSubmit={(data) => console.log(data)}>
-                        {({isSubmitting, values, setFieldValue}) => (
+                        validationSchema={CreateBuildingFormSchema}
+                        validateOnChange={false}
+                        validateOnBlur={false}
+                        onSubmit={(data) => handleCreateBuilding(data)}
+                        >
+                        {({isSubmitting, values, setFieldValue, errors}) => (
                             <Form>
                                 <MapSetPositionDialog 
                                     mapCenter={values.position}
@@ -49,6 +73,7 @@ const CreateBuildingPage = () => {
                                         zoneSelected={values.zone}
                                         onZoneSelected={(z) => setFieldValue("zone", z)}/>
                                 </Box>
+                                {errors.zone && <Text color="red.500" fontSize="sm" mt={1}>Debe seleccionar una zona</Text>}
 
                                 {/* Location */}
                                 <Box borderColor="gray.200" rounded="md" mt={7} borderWidth={1.5}>
@@ -79,6 +104,7 @@ const CreateBuildingPage = () => {
                                         )
                                     }
                                 </Box>
+                                {errors.position && <Text color="red.500" fontSize="sm" mt={1}>Agregue la posición</Text>}
 
                                 <Button 
                                     w="100%" mt={10} type="submit"

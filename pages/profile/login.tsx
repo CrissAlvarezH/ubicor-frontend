@@ -18,7 +18,6 @@ const LoginFormSchema = Yup.object().shape({
 
 const LoginPage = () => {
     const handleOnLogin = async (provider: string, data?: SignInOptions) => {
-        console.log("login", data)
         await signIn(provider, data)
     }
 

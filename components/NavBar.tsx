@@ -1,4 +1,4 @@
-import { SearchIcon } from "@chakra-ui/icons"
+import { AddIcon, SearchIcon } from "@chakra-ui/icons"
 import { Box, Button, HStack, IconButton, Spinner, Text } from "@chakra-ui/react"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -10,10 +10,11 @@ import { ProfileIcon } from "./Icons"
 interface NavBarProps {
     title: string
     onSearchClick: () => void
+    onAddClick?: () => void
 }
 
 
-const NavBar: FC<NavBarProps> = ({title, onSearchClick}) => {
+const NavBar: FC<NavBarProps> = ({title, onSearchClick, onAddClick}) => {
     const router = useRouter()
 
     const {data, status} = useSession()
@@ -36,6 +37,10 @@ const NavBar: FC<NavBarProps> = ({title, onSearchClick}) => {
                     <IconButton
                         onClick={() => onSearchClick()}
                         variant="ghost" aria-label="Search" icon={<SearchIcon />}/>
+                    
+                    <IconButton
+                        onClick={() => onAddClick && onAddClick()}
+                        variant="ghost" aria-label="Create building" icon={<AddIcon />}/>
 
                     {
                         status === "loading" ? <Box px={2}><Spinner /></Box> : (

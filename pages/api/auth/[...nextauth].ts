@@ -56,23 +56,23 @@ export const authOptions: NextAuthOptions = {
     },
 
     callbacks: {
-        async jwt({ token, account }) {
+        async jwt({ token, account, user }) {
             if (account && token.name && token.email) {
-
-                const userBody: OAuthUserCreate = {
-                    email: token.email
-                }
-
                 if (account.provider !== "credentials") {
                     // register if not exist on backend
+                    const userBody: OAuthUserCreate = {
+                        email: token.email
+                    }
+
                     userBody.full_name = token.name,
                     userBody.provider = account.provider
+
+                    const user = await AuthService.authGetOrCreateUser(userBody)
+
+                    token.user_id = user.id
+                    token.scopes = user.scopes
                 }
 
-                const user = await AuthService.authGetOrCreateUser(userBody)
-
-                token.user_id = user.id
-                token.scopes = user.scopes
             }
 
             if (account?.provider === "google")
@@ -82,6 +82,7 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user }) {
             session.scopes = token.scopes
+            session.access_token = token.access_token
             return session
         }
     }
@@ -116,7 +117,7 @@ async function refreshAccessToken(token: any) {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
   } catch (error) {
-    console.log(error)
+    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error)
 
     return {
       ...token,
