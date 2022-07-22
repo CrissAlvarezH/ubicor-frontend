@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, StackDivider, Tag, TagCloseButton, TagLabel, Text, toast, useDisclosure, useToast, VStack } from "@chakra-ui/react"
+import { Box, Button, FormControl, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, StackDivider, Tag, TagCloseButton, TagLabel, Text, toast, useDisclosure, useToast, VStack } from "@chakra-ui/react"
 import { BuildingZoneRetrieve } from "api_clients/models/BuildingZoneRetrieve"
 import { BuildingZonesService } from "api_clients/services/BuildingZonesService"
 import { useRouter } from "next/router"
@@ -70,24 +70,26 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
                     divider={<StackDivider/>} spacing={0}
                     >
                     {isLoading && (
-                        <Text>Cargando...</Text>
+                        <Box py={4}><Spinner /></Box>
                     )}
 
                     {!isLoading && zones.length == 0 && (
-                        <Text>No hay zonas</Text>
+                        <Text py={5}>No hay zonas</Text>
                     )}
 
-                    <HStack flex={1} p={1} spacing={0} flexWrap="wrap">
-                        {zones.map(zone => (
-                            <Box key={zone.id} p={1} onClick={() => onZoneSelected(zone)}>
-                                <Tag size="lg" borderRadius="full" variant="solid" 
-                                    colorScheme={zone == zoneSelected ? "green" : "gray"}>
-                                    <TagLabel>Zona {zone.name}</TagLabel>
-                                    <TagCloseButton onClick={() => handleOnDeleteZone(zone)}/>
-                                </Tag>
-                            </Box>
-                        ))}
-                    </HStack>
+                    {zones.length > 0 && (
+                        <HStack flex={1} p={1} spacing={0} flexWrap="wrap">
+                            {zones.map(zone => (
+                                <Box key={zone.id} p={1} onClick={() => onZoneSelected(zone)}>
+                                    <Tag size="lg" borderRadius="full" variant="solid" 
+                                        colorScheme={zone == zoneSelected ? "green" : "gray"}>
+                                        <TagLabel>Zona {zone.name}</TagLabel>
+                                        <TagCloseButton onClick={() => handleOnDeleteZone(zone)}/>
+                                    </Tag>
+                                </Box>
+                            ))}
+                        </HStack>
+                    )}
                 </HStack>
             </VStack>
         </>
