@@ -131,7 +131,7 @@ const CreateZoneDialog: FC<CreateZoneDialogProps> = ({isOpen, onClose, onCreateZ
             setName("")
         })
         .catch(error => {
-            toast({title: "Error al crear la zona"})
+            toast({title: "Error al crear la zona, " + error.body?.detail, status: "error"})
             setIsLoading(false)
         })
     }
