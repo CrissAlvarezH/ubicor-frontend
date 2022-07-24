@@ -7,6 +7,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Body_Auth_login } from './models/Body_Auth_login';
+export type { Body_Auth_token_sign_in } from './models/Body_Auth_token_sign_in';
 export type { Body_Buildings_create_building_images } from './models/Body_Buildings_create_building_images';
 export type { Body_Buildings_update_building_image } from './models/Body_Buildings_update_building_image';
 export type { BuildingCreate } from './models/BuildingCreate';
@@ -17,7 +18,6 @@ export type { BuildingZoneCreate } from './models/BuildingZoneCreate';
 export type { BuildingZoneRetrieve } from './models/BuildingZoneRetrieve';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { ImageRetrieve } from './models/ImageRetrieve';
-export type { OAuthUserCreate } from './models/OAuthUserCreate';
 export type { PositionCreate } from './models/PositionCreate';
 export type { PositionRetrieve } from './models/PositionRetrieve';
 export type { RoomCreate } from './models/RoomCreate';

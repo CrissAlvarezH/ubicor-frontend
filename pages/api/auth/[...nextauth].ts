@@ -44,11 +44,7 @@ export const authOptions: NextAuthOptions = {
                     response_type: "code"
                 }
             }
-        }),
-        GithubProvider({
-            clientId: process.env.AUTH_GITHUB_ID,
-            clientSecret: process.env.AUTH_GITHUB_SECRET,
-        }),
+        })
     ],
 
     pages: {
@@ -58,7 +54,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account, user }) {
             if (account && token.name && token.email) {
-                if (account.provider !== "credentials") {
+                if (account.provider === "google") {
                     // register if not exist on backend
                     const userBody: OAuthUserCreate = {
                         email: token.email
@@ -67,18 +63,18 @@ export const authOptions: NextAuthOptions = {
                     userBody.full_name = token.name,
                     userBody.provider = account.provider
 
-                    const user = await AuthService.authGetOrCreateUser(userBody)
+                    const idToken = account.id_token || "invalid"
+                    const resp = await AuthService.authTokenSignIn({token_id: idToken, provider: "google"})
 
-                    token.user_id = user.id
-                    token.scopes = user.scopes
+                    token.user_id = resp.user.id
+                    token.scopes = resp.user.scopes
+                    token.access_token = resp.access_token
+
+                    return refreshAccessToken(token)
                 }
-
             }
 
-            if (account?.provider === "google")
-                return refreshAccessToken(token)
-            else
-                return token
+            return token
         },
         async session({ session, token, user }) {
             session.scopes = token.scopes
@@ -116,8 +112,8 @@ async function refreshAccessToken(token: any) {
       accessTokenExpires: Date.now() + refreshedTokens.expires_at * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
-  } catch (error) {
-    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error)
+  } catch (error: any) {
+    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error?.data)
 
     return {
       ...token,

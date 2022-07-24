@@ -70,10 +70,6 @@ const LoginPage = () => {
                             iconSpacing={3} leftIcon={<GoogleIcon />}>
                             Ingresar con Google
                         </Button>
-                        <Button onClick={() => handleOnLogin("github")}
-                            bg="black" color="white" iconSpacing={3} leftIcon={<GitHubIcon />}>
-                            Ingresar con GitHub
-                        </Button>
                     </VStack>
                 </VStack>
             </Box>
