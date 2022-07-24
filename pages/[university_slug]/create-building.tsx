@@ -3,11 +3,12 @@ import BackNavBar from "components/BackNavBar"
 import InputField from "components/InputField"
 import { Form, Formik } from "formik"
 import { useRouter } from "next/router"
-import { FC, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import { SimpleMap, MapWrapper } from "components/SimpleMap"
 import BuildingZoneSelector from "components/BuildingZoneSelector"
 import * as Yup from "yup"
-import { BuildingsService } from "api_clients"
+import { BuildingsService, OpenAPI } from "api_clients"
+import { useSession } from "next-auth/react"
 
 
 const CreateBuildingFormSchema = Yup.object().shape({
@@ -20,12 +21,24 @@ const CreateBuildingFormSchema = Yup.object().shape({
 
 const CreateBuildingPage = () => {
     const toast = useToast()
+    const {data: userData, status: sessionStatus} = useSession()
     const router = useRouter()
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
 
+    useEffect(() => {
+        if (sessionStatus === "unauthenticated")
+            toast({title: "Debe estar autenticado", status: "error"})
+    }, [sessionStatus])
+
     const handleCreateBuilding = async (data: any) => {
+        if (sessionStatus === "unauthenticated")
+            return toast({title: "Debe estar autenticado", status: "error"})
+
+        console.log("user data", userData)
+
         const body = {...data, zone: data.zone.name}
         try {
+            OpenAPI.TOKEN = userData?.access_token as string
             const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
             console.log(resp)
         } catch (error) {
