@@ -21,7 +21,7 @@ export class RoomsService {
     ): CancelablePromise<Array<RoomRetrieve>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/universities/{university_id}/buildings/{building_id}/rooms/',
+            url: '/api/v1/universities/{university_slug}/buildings/{building_id}/rooms/',
             path: {
                 'building_id': buildingId,
             },
@@ -33,19 +33,22 @@ export class RoomsService {
 
     /**
      * Create
+     * @param universitySlug
      * @param buildingId
      * @param requestBody
      * @returns RoomRetrieve Successful Response
      * @throws ApiError
      */
     public static roomsCreate(
+        universitySlug: string,
         buildingId: number,
         requestBody: RoomCreate,
     ): CancelablePromise<RoomRetrieve> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/universities/{university_id}/buildings/{building_id}/rooms/',
+            url: '/api/v1/universities/{university_slug}/buildings/{building_id}/rooms/',
             path: {
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             body: requestBody,
@@ -67,7 +70,7 @@ export class RoomsService {
     ): CancelablePromise<RoomRetrieve> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/universities/{university_id}/buildings/{building_id}/rooms/{room_id}',
+            url: '/api/v1/universities/{university_slug}/buildings/{building_id}/rooms/{room_id}',
             path: {
                 'room_id': roomId,
             },
@@ -79,22 +82,22 @@ export class RoomsService {
 
     /**
      * Update
-     * @param buildingId
+     * @param universitySlug
      * @param roomId
      * @param requestBody
      * @returns RoomRetrieve Successful Response
      * @throws ApiError
      */
     public static roomsUpdate(
-        buildingId: number,
+        universitySlug: string,
         roomId: number,
         requestBody: RoomCreate,
     ): CancelablePromise<RoomRetrieve> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/universities/{university_id}/buildings/{building_id}/rooms/{room_id}/',
+            url: '/api/v1/universities/{university_slug}/buildings/{building_id}/rooms/{room_id}/',
             path: {
-                'building_id': buildingId,
+                'university_slug': universitySlug,
                 'room_id': roomId,
             },
             body: requestBody,
@@ -107,20 +110,20 @@ export class RoomsService {
 
     /**
      * Delete
-     * @param buildingId
+     * @param universitySlug
      * @param roomId
      * @returns RoomRetrieve Successful Response
      * @throws ApiError
      */
     public static roomsDelete(
-        buildingId: number,
+        universitySlug: string,
         roomId: number,
     ): CancelablePromise<RoomRetrieve> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/universities/{university_id}/buildings/{building_id}/rooms/{room_id}/',
+            url: '/api/v1/universities/{university_slug}/buildings/{building_id}/rooms/{room_id}/',
             path: {
-                'building_id': buildingId,
+                'university_slug': universitySlug,
                 'room_id': roomId,
             },
             errors: {

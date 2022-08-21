@@ -26,8 +26,19 @@ const CreateBuildingPage = () => {
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
 
     useEffect(() => {
-        if (sessionStatus === "unauthenticated")
-            toast({title: "Debe estar autenticado", status: "error"})
+        console.log("session status", sessionStatus, "data", userData)
+        switch(sessionStatus) {
+            case "unauthenticated":
+                toast({title: "Debe estar autenticado", status: "error"})
+                break
+            case "authenticated":
+                OpenAPI.TOKEN = userData?.access_token as string
+                break
+        }
+        // if (sessionStatus === "unauthenticated")
+        //     toast({title: "Debe estar autenticado", status: "error"})
+        // else if (sessionStatus == "authenticated")
+        //     OpenAPI.TOKEN = userData?.access_token as string
     }, [sessionStatus])
 
     const handleCreateBuilding = async (data: any) => {
@@ -38,7 +49,6 @@ const CreateBuildingPage = () => {
 
         const body = {...data, zone: data.zone.name}
         try {
-            OpenAPI.TOKEN = userData?.access_token as string
             const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
             console.log(resp)
         } catch (error) {
@@ -82,7 +92,7 @@ const CreateBuildingPage = () => {
                                 <Box mt={3}>
                                     <Text fontWeight="semibold" pb={2}>Zona</Text>
                                     <BuildingZoneSelector 
-                                        university_slug={router.query.university_slug?.toString()}
+                                        university_slug={router.query.university_slug?.toString() || ""}
                                         zoneSelected={values.zone}
                                         onZoneSelected={(z) => setFieldValue("zone", z)}/>
                                 </Box>

@@ -84,12 +84,14 @@ export class BuildingsService {
 
     /**
      * Update
+     * @param universitySlug
      * @param buildingId
      * @param requestBody
      * @returns BuildingList Successful Response
      * @throws ApiError
      */
     public static buildingsUpdate(
+        universitySlug: string,
         buildingId: number,
         requestBody: BuildingCreate,
     ): CancelablePromise<BuildingList> {
@@ -97,6 +99,7 @@ export class BuildingsService {
             method: 'PUT',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/',
             path: {
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             body: requestBody,
@@ -109,17 +112,20 @@ export class BuildingsService {
 
     /**
      * Delete
+     * @param universitySlug
      * @param buildingId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static buildingsDelete(
+        universitySlug: string,
         buildingId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/',
             path: {
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             errors: {
@@ -130,12 +136,14 @@ export class BuildingsService {
 
     /**
      * Create Building Images
+     * @param universitySlug
      * @param buildingId
      * @param formData
      * @returns BuildingImageRetrieve Successful Response
      * @throws ApiError
      */
     public static buildingsCreateBuildingImages(
+        universitySlug: string,
         buildingId: number,
         formData: Body_Buildings_create_building_images,
     ): CancelablePromise<Array<BuildingImageRetrieve>> {
@@ -143,6 +151,7 @@ export class BuildingsService {
             method: 'POST',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/',
             path: {
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             formData: formData,
@@ -156,6 +165,7 @@ export class BuildingsService {
     /**
      * Update Building Image
      * @param imageId
+     * @param universitySlug
      * @param buildingId
      * @param formData
      * @returns ImageRetrieve Successful Response
@@ -163,6 +173,7 @@ export class BuildingsService {
      */
     public static buildingsUpdateBuildingImage(
         imageId: number,
+        universitySlug: string,
         buildingId: number,
         formData: Body_Buildings_update_building_image,
     ): CancelablePromise<ImageRetrieve> {
@@ -171,6 +182,7 @@ export class BuildingsService {
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/{image_id}/',
             path: {
                 'image_id': imageId,
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             formData: formData,
@@ -184,12 +196,14 @@ export class BuildingsService {
     /**
      * Remove Building Image
      * @param imageId
+     * @param universitySlug
      * @param buildingId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static buildingsRemoveBuildingImage(
         imageId: number,
+        universitySlug: string,
         buildingId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -197,6 +211,7 @@ export class BuildingsService {
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/{image_id}/',
             path: {
                 'image_id': imageId,
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             errors: {
@@ -207,17 +222,20 @@ export class BuildingsService {
 
     /**
      * Remove All Building Images
+     * @param universitySlug
      * @param buildingId
      * @returns any Successful Response
      * @throws ApiError
      */
     public static buildingsRemoveAllBuildingImages(
+        universitySlug: string,
         buildingId: number,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/all/',
             path: {
+                'university_slug': universitySlug,
                 'building_id': buildingId,
             },
             errors: {

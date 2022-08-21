@@ -4,7 +4,7 @@
 
 import type { BuildingImageRetrieve } from './BuildingImageRetrieve';
 import type { PositionRetrieve } from './PositionRetrieve';
-import type { UserRetrieve } from './UserRetrieve';
+import type { UserList } from './UserList';
 
 export type BuildingList = {
     id: number;
@@ -12,7 +12,7 @@ export type BuildingList = {
     code: string;
     zone: string;
     university_id: number;
-    creator: UserRetrieve;
+    creator: UserList;
     position: PositionRetrieve;
     building_images: Array<BuildingImageRetrieve>;
 };

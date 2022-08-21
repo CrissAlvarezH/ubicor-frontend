@@ -5,6 +5,8 @@ import type { Body_Auth_login } from '../models/Body_Auth_login';
 import type { Body_Auth_token_sign_in } from '../models/Body_Auth_token_sign_in';
 import type { Token } from '../models/Token';
 import type { UserCreate } from '../models/UserCreate';
+import type { UserRetrieve } from '../models/UserRetrieve';
+import type { UserUpdate } from '../models/UserUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -64,6 +66,43 @@ export class AuthService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/token-sign-in',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * User List
+     * @returns UserRetrieve Successful Response
+     * @throws ApiError
+     */
+    public static authUserList(): CancelablePromise<Array<UserRetrieve>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/users',
+        });
+    }
+
+    /**
+     * User Edit
+     * @param userId
+     * @param requestBody
+     * @returns UserRetrieve Successful Response
+     * @throws ApiError
+     */
+    public static authUserEdit(
+        userId: number,
+        requestBody: UserUpdate,
+    ): CancelablePromise<UserRetrieve> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/users/{user_id}/',
+            path: {
+                'user_id': userId,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
