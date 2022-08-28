@@ -7,7 +7,7 @@ import { FC, useEffect, useRef, useState } from "react"
 import { SimpleMap, MapWrapper } from "components/SimpleMap"
 import BuildingZoneSelector from "components/BuildingZoneSelector"
 import * as Yup from "yup"
-import { BuildingsService, OpenAPI } from "api_clients"
+import { ApiError, BuildingsService, OpenAPI } from "api_clients"
 import { useSession } from "next-auth/react"
 
 
@@ -26,7 +26,7 @@ const CreateBuildingPage = () => {
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
 
     useEffect(() => {
-        console.log("session status", sessionStatus, "data", userData)
+        console.log("session status", sessionStatus)
         switch(sessionStatus) {
             case "unauthenticated":
                 toast({title: "Debe estar autenticado", status: "error"})
@@ -35,24 +35,19 @@ const CreateBuildingPage = () => {
                 OpenAPI.TOKEN = userData?.access_token as string
                 break
         }
-        // if (sessionStatus === "unauthenticated")
-        //     toast({title: "Debe estar autenticado", status: "error"})
-        // else if (sessionStatus == "authenticated")
-        //     OpenAPI.TOKEN = userData?.access_token as string
     }, [sessionStatus])
 
     const handleCreateBuilding = async (data: any) => {
         if (sessionStatus === "unauthenticated")
             return toast({title: "Debe estar autenticado", status: "error"})
 
-        console.log("user data", userData)
-
         const body = {...data, zone: data.zone.name}
         try {
             const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
             console.log(resp)
-        } catch (error) {
-            console.log("ERROR", error)
+        } catch (error: any) {
+            console.log("ERROR", error.body)
+            toast({title: error?.body.detail, status: "error"})
         }
     }
     
