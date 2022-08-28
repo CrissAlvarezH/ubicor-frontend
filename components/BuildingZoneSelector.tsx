@@ -1,17 +1,20 @@
 import { Box, Button, FormControl, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, StackDivider, Tag, TagCloseButton, TagLabel, Text, toast, useDisclosure, useToast, VStack } from "@chakra-ui/react"
+import { OpenAPI } from "api_clients"
 import { BuildingZoneRetrieve } from "api_clients/models/BuildingZoneRetrieve"
 import { BuildingZonesService } from "api_clients/services/BuildingZonesService"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 
 
 interface BuildingZoneSelectorProps {
-    university_slug?: string
+    university_slug: string
     zoneSelected?: BuildingZoneRetrieve
     onZoneSelected: (zone?: BuildingZoneRetrieve) => void
 }
 
 const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, zoneSelected, onZoneSelected}) => {
+    const {data: userData, status: sessionStatus} = useSession()
     const [isLoading, setIsLoading] = useState(false)
     const [zones, setZones] = useState<BuildingZoneRetrieve[]>([])
     
@@ -23,16 +26,19 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
     useEffect(() => {
         setIsLoading(true)
 
-        BuildingZonesService.buildingZonesList(university_slug)
-            .then(resp => {
-                setZones(resp)
-                setIsLoading(false)
-            })
-            .catch(error => {
-                setIsLoading(false)
-                toast({title: "Error al cargar la zonas, recargue la pagina", status: "error"})
-            })
-    }, [])
+        if (sessionStatus == "authenticated") {
+            OpenAPI.TOKEN = userData?.access_token as string
+            BuildingZonesService.buildingZonesList(university_slug)
+                .then(resp => {
+                    setZones(resp)
+                    setIsLoading(false)
+                })
+                .catch(error => {
+                    setIsLoading(false)
+                    toast({title: "Error al cargar la zonas, recargue la pagina", status: "error"})
+                })
+        }
+    }, [sessionStatus])
 
     const handleOnDeleteZone = (zone: BuildingZoneRetrieve) => {
         BuildingZonesService.buildingZonesDelete(zone.id)

@@ -7,7 +7,7 @@ import { FC, useEffect, useRef, useState } from "react"
 import { SimpleMap, MapWrapper } from "components/SimpleMap"
 import BuildingZoneSelector from "components/BuildingZoneSelector"
 import * as Yup from "yup"
-import { BuildingsService, OpenAPI } from "api_clients"
+import { ApiError, BuildingsService, OpenAPI } from "api_clients"
 import { useSession } from "next-auth/react"
 
 
@@ -26,23 +26,28 @@ const CreateBuildingPage = () => {
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
 
     useEffect(() => {
-        if (sessionStatus === "unauthenticated")
-            toast({title: "Debe estar autenticado", status: "error"})
+        console.log("session status", sessionStatus)
+        switch(sessionStatus) {
+            case "unauthenticated":
+                toast({title: "Debe estar autenticado", status: "error"})
+                break
+            case "authenticated":
+                OpenAPI.TOKEN = userData?.access_token as string
+                break
+        }
     }, [sessionStatus])
 
     const handleCreateBuilding = async (data: any) => {
         if (sessionStatus === "unauthenticated")
             return toast({title: "Debe estar autenticado", status: "error"})
 
-        console.log("user data", userData)
-
         const body = {...data, zone: data.zone.name}
         try {
-            OpenAPI.TOKEN = userData?.access_token as string
             const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
             console.log(resp)
-        } catch (error) {
-            console.log("ERROR", error)
+        } catch (error: any) {
+            console.log("ERROR", error.body)
+            toast({title: error?.body.detail, status: "error"})
         }
     }
     
@@ -82,7 +87,7 @@ const CreateBuildingPage = () => {
                                 <Box mt={3}>
                                     <Text fontWeight="semibold" pb={2}>Zona</Text>
                                     <BuildingZoneSelector 
-                                        university_slug={router.query.university_slug?.toString()}
+                                        university_slug={router.query.university_slug?.toString() || ""}
                                         zoneSelected={values.zone}
                                         onZoneSelected={(z) => setFieldValue("zone", z)}/>
                                 </Box>

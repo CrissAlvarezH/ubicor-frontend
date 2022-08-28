@@ -53,6 +53,7 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async jwt({ token, account, user }) {
+            console.log("jwt", {token, account, user})
             if (account && token.name && token.email) {
                 if (account.provider === "google") {
                     // register if not exist on backend

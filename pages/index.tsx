@@ -1,4 +1,4 @@
-import { Box, Button, Spinner, Text } from '@chakra-ui/react'
+import { Box, Button, Spinner, Text, VStack } from '@chakra-ui/react'
 import { UniversityList, UniversityService } from 'api_clients'
 import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
@@ -39,10 +39,10 @@ const Home: NextPage<HomePageProps> = ({universities}: HomePageProps) => {
 
         {
           !isLoadingRedirect && (
-            <Box mt={10}>
+            <VStack mt={10}>
               {
                 universities.map((u: UniversityList) => (
-                  <Link key={u.id} href={`/${u.slug}`}><a>
+                  <Link key={u.id} href={`/${u.slug}/buildings`}><a>
                     <Button
                       variant="ghost"
                       borderWidth={1} borderColor="gray.700" boxShadow="lg"
@@ -52,7 +52,7 @@ const Home: NextPage<HomePageProps> = ({universities}: HomePageProps) => {
                   </a></Link>
                 ))
               }
-            </Box>
+            </VStack>
           )
         }
       </Box>

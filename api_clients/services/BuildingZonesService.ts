@@ -17,12 +17,12 @@ export class BuildingZonesService {
      * @throws ApiError
      */
     public static buildingZonesList(
-        universitySlug?: string,
+        universitySlug: string,
     ): CancelablePromise<Array<BuildingZoneRetrieve>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/building-zones',
-            query: {
+            url: '/api/v1/universities/{university_slug}/building-zones',
+            path: {
                 'university_slug': universitySlug,
             },
             errors: {
@@ -33,16 +33,21 @@ export class BuildingZonesService {
 
     /**
      * Create
+     * @param universitySlug
      * @param requestBody
      * @returns BuildingZoneRetrieve Successful Response
      * @throws ApiError
      */
     public static buildingZonesCreate(
+        universitySlug: string,
         requestBody: BuildingZoneCreate,
     ): CancelablePromise<BuildingZoneRetrieve> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/building-zones/',
+            url: '/api/v1/universities/{university_slug}/building-zones/',
+            path: {
+                'university_slug': universitySlug,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -54,17 +59,20 @@ export class BuildingZonesService {
     /**
      * Delete
      * @param buildingZoneId
+     * @param universitySlug
      * @returns any Successful Response
      * @throws ApiError
      */
     public static buildingZonesDelete(
         buildingZoneId: number,
+        universitySlug: string,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/building-zones/{building_zone_id}/',
+            url: '/api/v1/universities/{university_slug}/building-zones/{building_zone_id}/',
             path: {
                 'building_zone_id': buildingZoneId,
+                'university_slug': universitySlug,
             },
             errors: {
                 422: `Validation Error`,

@@ -13,6 +13,7 @@ export type UniversityRetrieve = {
     is_active: boolean;
     created_by: number;
     position_id: number;
+    owners: Array<number>;
     position: PositionRetrieve;
     building_zones: Array<BuildingZoneRetrieve>;
     buildings: Array<BuildingList>;
