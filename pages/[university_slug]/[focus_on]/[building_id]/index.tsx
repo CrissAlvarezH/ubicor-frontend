@@ -16,7 +16,10 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
 
     return (
         <>
-            <BackNavBar title={`Bloque ${building.code}`}/>
+            <BackNavBar 
+                title={`Bloque ${building.code}`}
+                actions={["Option 1", "Option 2"]}
+                onActionClick={(action) => console.log(action)}/>
 
             {/* Image slider */}
             <ImageSlider images={imageUrls}/>
