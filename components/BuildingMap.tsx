@@ -73,7 +73,7 @@ const BuildingMap: FC<MapProps> = ({center, buildings, buildingFocus}: MapProps)
                     zoom={17}
                     onClick={() => setBuildingSelected(null)}
                     options={mapOptions}
-                    onCenterChanged={() => console.log("building map on center changed", center)}>
+                >
                     
                     {
                         buildingSelected  && (
