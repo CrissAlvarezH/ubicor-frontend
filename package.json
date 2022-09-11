@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-client": "openapi --input http://localhost:8000/openapi.json --output ./api_clients --client axios"
+    "generate-client": "openapi --input http://127.0.0.1:8000/openapi.json --output ./api_clients --client axios"
   },
   "dependencies": {
     "@chakra-ui/icons": "1.1.7",

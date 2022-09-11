@@ -26,7 +26,6 @@ const CreateBuildingPage = () => {
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
 
     useEffect(() => {
-        console.log("session status", sessionStatus)
         switch(sessionStatus) {
             case "unauthenticated":
                 toast({title: "Debe estar autenticado", status: "error"})

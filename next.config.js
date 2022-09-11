@@ -5,7 +5,7 @@ const nextConfig = {
   images: {
     domains: [
       "localhost", "api.ubicor.alvarezcristian.com", "host.docker.internal",
-      "avatars.githubusercontent.com", "lh3.googleusercontent.com"
+      "avatars.githubusercontent.com", "lh3.googleusercontent.com", "127.0.0.1"
     ]
   },
   experimental: {
