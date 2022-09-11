@@ -4,7 +4,6 @@
 import type { Body_Buildings_create_building_images } from '../models/Body_Buildings_create_building_images';
 import type { Body_Buildings_update_building_image } from '../models/Body_Buildings_update_building_image';
 import type { BuildingCreate } from '../models/BuildingCreate';
-import type { BuildingImageRetrieve } from '../models/BuildingImageRetrieve';
 import type { BuildingList } from '../models/BuildingList';
 import type { BuildingRetrieve } from '../models/BuildingRetrieve';
 import type { ImageRetrieve } from '../models/ImageRetrieve';
@@ -139,14 +138,14 @@ export class BuildingsService {
      * @param universitySlug
      * @param buildingId
      * @param formData
-     * @returns BuildingImageRetrieve Successful Response
+     * @returns BuildingRetrieve Successful Response
      * @throws ApiError
      */
     public static buildingsCreateBuildingImages(
         universitySlug: string,
         buildingId: number,
         formData: Body_Buildings_create_building_images,
-    ): CancelablePromise<Array<BuildingImageRetrieve>> {
+    ): CancelablePromise<BuildingRetrieve> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/',
@@ -198,14 +197,14 @@ export class BuildingsService {
      * @param imageId
      * @param universitySlug
      * @param buildingId
-     * @returns any Successful Response
+     * @returns BuildingRetrieve Successful Response
      * @throws ApiError
      */
     public static buildingsRemoveBuildingImage(
         imageId: number,
         universitySlug: string,
         buildingId: number,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<BuildingRetrieve> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/{image_id}/',
@@ -224,13 +223,13 @@ export class BuildingsService {
      * Remove All Building Images
      * @param universitySlug
      * @param buildingId
-     * @returns any Successful Response
+     * @returns BuildingRetrieve Successful Response
      * @throws ApiError
      */
     public static buildingsRemoveAllBuildingImages(
         universitySlug: string,
         buildingId: number,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<BuildingRetrieve> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/all/',

@@ -17,12 +17,13 @@ a {
 
 ::-webkit-scrollbar {
   width: 1px;
+  height: 3px;
 }
 ::-webkit-scrollbar-track {
   width: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: green;
+  background: rgba(20, 129, 20, 0.651);
   border-radius: 24px;
 }
                         

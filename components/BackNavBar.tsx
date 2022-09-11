@@ -13,7 +13,6 @@ interface BackNavBarProps {
 
 const BackNavBar: FC<BackNavBarProps> = ({title, to, actions = [], onActionClick}) => {
     const router = useRouter()
-    console.log("actions", actions)
 
     return (
         <Box backgroundColor="teal.500" px={2} py={2} shadow="base">
@@ -35,7 +34,7 @@ const BackNavBar: FC<BackNavBarProps> = ({title, to, actions = [], onActionClick
                                     variant="ghost"
                                     color="white"
                                 />
-                                <MenuList>
+                                <MenuList zIndex={100}>
                                     {actions.map(action => (
                                         <MenuItem
                                             key={action}

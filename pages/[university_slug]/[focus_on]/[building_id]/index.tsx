@@ -5,6 +5,7 @@ import { UniversityList, UniversityService, BuildingsService, BuildingList, Buil
 import { zoneColorSchemas } from "utils/styles"
 import BuildingFloorList from "components/BuildingFloorList"
 import BackNavBar from "components/BackNavBar";
+import { useRouter } from "next/router";
 
 
 interface BuildingPageProps {
@@ -12,14 +13,26 @@ interface BuildingPageProps {
 }
 
 const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps) => {
+    const router = useRouter()
     const imageUrls = building.building_images.map((i) => i.image.original)
+
+    function handleMenuActionSelected(action: string) {
+        switch (action) {
+            case "Editar datos":
+                router.push(`/${router.query.university_slug}/buildings/${router.query.building_id}/edit`)
+                break;
+            case "Editar imagenes":
+                router.push(`/${router.query.university_slug}/buildings/${router.query.building_id}/edit/images`)
+                break;
+        }
+    }
 
     return (
         <>
             <BackNavBar 
                 title={`Bloque ${building.code}`}
-                actions={["Option 1", "Option 2"]}
-                onActionClick={(action) => console.log(action)}/>
+                actions={["Editar datos", "Editar imagenes"]}
+                onActionClick={handleMenuActionSelected}/>
 
             {/* Image slider */}
             <ImageSlider images={imageUrls}/>
