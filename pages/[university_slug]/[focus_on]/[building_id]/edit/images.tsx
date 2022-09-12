@@ -109,47 +109,46 @@ const EditBuildingPage: NextPage = (props) => {
     if (!building) return <Box><BackNavBar title={`Editar imagenes`}/></Box>
 
     return (
-        <Box>
+        <>
             <BackNavBar title={`Editar imagenes`}/>    
 
-            <Box display="flex" justifyContent="center">
-                <VStack flex={1} maxW="600px" pt={{"base": 5, "md": 10}} px={5}>
-                    <Text fontSize="lg" pb={3} fontWeight="bold">{building.name}</Text>
+            <Box display="flex" flexDir="column" alignItems="center" px={2}>
 
-                    {building.building_images.length == 0 && <Box pb={2}><Text>No hay imagenes</Text></Box>}
+                <Text fontSize="lg" py={5} fontWeight="bold">{building.name}</Text>
 
-                    {/* Images */}
-                    <HStack overflowX="scroll" position="relative" w="full">
-                        {building.building_images.map((image: BuildingImageRetrieve) => (
-                            <Box key={image.image.id}
-                                position="relative" >
-                                <Image 
-                                    src={OpenAPI.BASE + image.image.original}
-                                    width={48} height={40} rounded="lg"
-                                    />
+                {building.building_images.length == 0 && <Box pb={2}><Text>No hay imagenes</Text></Box>}
 
-                                <Box pos="absolute" top={0} bottom={0} right={0} left={0}
-                                    rounded="lg"
-                                    bgGradient="linear(blackAlpha.500, blackAlpha.50, blackAlpha.50)">
-                                    <Box pos="absolute" top={0} right={0} p={1}>
-                                        <IconButton rounded="full" variant="outline" color="white" aria-label="Delete" icon={<DeleteIcon />}/>
-                                    </Box>
+                {/* Images */}
+                <HStack overflowX="scroll" w="full" justify={{base: "start", sm: "center"}}>
+                    {building.building_images.map((image: BuildingImageRetrieve) => (
+                        <Box key={image.image.id}
+                            position="relative" flexShrink={0} width={40}>
+                            <Image 
+                                src={OpenAPI.BASE + image.image.original}
+                                width={48} height={40} rounded="lg"
+                                />
+
+                            <Box pos="absolute" top={0} bottom={0} right={0} left={0}
+                                rounded="lg"
+                                bgGradient="linear(blackAlpha.500, blackAlpha.50, blackAlpha.50)">
+                                <Box pos="absolute" top={0} right={0} p={1}>
+                                    <IconButton rounded="full" variant="outline" color="white" aria-label="Delete" icon={<DeleteIcon />}/>
                                 </Box>
                             </Box>
-                        ))}
-                    </HStack>
+                        </Box>
+                    ))}
+                </HStack>
 
-                    <input type="file"
-                        ref={inputFileRef}
-                        style={{display: "none"}}
-                        onChange={handleOnChangeImage}
-                        accept="image/x-png,image/gif,image/jpeg"
-                        multiple/>
+                <input type="file"
+                    ref={inputFileRef}
+                    style={{display: "none"}}
+                    onChange={handleOnChangeImage}
+                    accept="image/x-png,image/gif,image/jpeg"
+                    multiple/>
 
-                    <Button onClick={handleOnPickImage} colorScheme="teal">Subir imagen</Button>
-                </VStack>
+                <Button mt={5} onClick={handleOnPickImage} colorScheme="teal">Subir imagen</Button>
             </Box>
-        </Box>
+        </>
     )
 }
 
