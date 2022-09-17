@@ -1,7 +1,8 @@
-import { DeleteIcon } from "@chakra-ui/icons";
-import { Box, Image, Button, HStack, Spinner, Text, useQuery, useToast, VStack, IconButton } from "@chakra-ui/react";
-import { Body_Buildings_create_building_images, BuildingImageRetrieve, BuildingRetrieve, BuildingsService, OpenAPI } from "api_clients";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { Box, Image, Button, HStack, Spinner, Text, useToast, IconButton } from "@chakra-ui/react";
+import { Body_Buildings_create_building_images, Body_Buildings_update_building_image, BuildingImageRetrieve, BuildingRetrieve, BuildingsService, ImageRetrieve, OpenAPI } from "api_clients";
 import BackNavBar from "components/BackNavBar";
+import ConfirmationDialog from "components/ConfirmationDialog";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -12,7 +13,10 @@ const MAX_LENGTH_IMAGES = 3
 const EditBuildingPage: NextPage = (props) => {
     const [loading, setLoading] = useState(true)
     const [building, setBuilding] = useState<BuildingRetrieve>()
-    const inputFileRef = useRef<HTMLInputElement>(null)
+    const [imageToDelete, setImageToDelete] = useState<BuildingImageRetrieve>()
+    const [imageToUpdate, setImageToUpdate] = useState<BuildingImageRetrieve>()
+    const inputUploadFileRef = useRef<HTMLInputElement>(null)
+    const inputUpdateFileRef = useRef<HTMLInputElement>(null)
     const session = useSession()
     const router = useRouter()
     const toast = useToast()
@@ -35,30 +39,50 @@ const EditBuildingPage: NextPage = (props) => {
     }, [router.query])
 
     function callUploadBuildingImages(images: any) {
-        if (
-            !router || !router.query || !router.query.university_slug
-            || !router.query.building_id
-        ) return toast({title: "Ruta incorrecta"})
-
         const body: Body_Buildings_create_building_images = {files: []}
         for (const image of images)
             body.files.push(image)
     
+        setLoading(true)
+
         BuildingsService.buildingsCreateBuildingImages(
-            router.query.university_slug.toString() || "",
-            Number.parseInt(router.query.building_id.toString()),
+            router.query!.university_slug!.toString(),
+            Number.parseInt(router.query!.building_id!.toString()),
             body,
         ).then((resp: BuildingRetrieve) => {
             console.log("upload image", resp)
             setBuilding(resp)
+            setLoading(false)
         })
         .catch(error => {
+            setLoading(false)
             console.log("upload image error", error)
             toast({title: error.body.detail, status: "error"})
         })
     }
 
+    function callUpdateImage(image?: BuildingImageRetrieve, file: any) {
+        if (!image) return
+        setLoading(true)
+
+        BuildingsService.buildingsUpdateBuildingImage(
+            image.image.id,
+            router.query!.university_slug!.toString(),
+            Number.parseInt(router.query!.building_id!.toString()),
+            {file}
+        ).then((resp: BuildingRetrieve) => {
+            setBuilding(undefined)
+            setBuilding(resp)
+            setLoading(false)
+        }).catch(error => {
+            setLoading(false)
+            console.log("update image error", error)
+            toast({title: error.body.detail, status: "error"})
+        })
+    }
+
     function callBuilding(buildingId: number) {
+        setLoading(true)
         BuildingsService.buildingsRetrieve(buildingId)
             .then((resp: BuildingRetrieve) => {
                 setBuilding(resp)
@@ -71,16 +95,26 @@ const EditBuildingPage: NextPage = (props) => {
             })
     }
 
-    function handleOnPickImage(e: any) {
-        if (building && building.building_images.length >= 3) {
-            toast({title: "Maximo 3 imagenes", status: "info"})
-            return
-        }
+    function callDeleteImage(image?: BuildingImageRetrieve) {
+        if (!image) return
+        setLoading(true)
 
-        inputFileRef.current?.click()
+        BuildingsService.buildingsRemoveBuildingImage(
+            image.image.id,
+            router.query!.university_slug!.toString(),
+            Number.parseFloat(router.query!.building_id!.toString())
+        ).then((resp: BuildingRetrieve) => {
+            setBuilding(resp)
+            setImageToDelete(undefined)
+            setLoading(false)
+        }).catch(error => {
+            console.error("ERROR: edit building delete", error)
+            toast({title: error.body.detail, status: "error"})
+            setLoading(false)
+        })
     }
 
-    function handleOnChangeImage(e: any) {
+    function handleOnChangeUploadImage(e: any) {
         e.stopPropagation()
         e.preventDefault()
         console.log("pick images")
@@ -90,66 +124,120 @@ const EditBuildingPage: NextPage = (props) => {
         const newFiles = e.target.files
         const totalImages = building.building_images.length + newFiles.length
         if (totalImages > MAX_LENGTH_IMAGES)
-            return toast({title: "Maximo 3 imagenes", status: "info"})
+            return toast({title: "Maximo 3 imagenes", status: "error"})
 
         callUploadBuildingImages(newFiles)
     }
 
-    if (loading) {
-        return (
-            <Box>
-                <BackNavBar title={`Editar imagenes`}/>    
-                <Box pt={10} display="flex" justifyContent="center">
-                    <Spinner size="xl"/>
-                </Box>
-            </Box>
-        )
+    function handleOnChangeUpdateImage(e: any) {
+        const newFiles = e.target.files
+        if (newFiles.length !== 1) 
+            return toast({title: "Debe escoger una imagen", status: "error"})
+        
+        callUpdateImage(imageToUpdate, newFiles[0])
     }
 
-    if (!building) return <Box><BackNavBar title={`Editar imagenes`}/></Box>
+    function handlePickImage(fileAction: "upload" | "update") {
+        if (fileAction == "upload") {
+            if (building && building.building_images.length >= 3) {
+                toast({title: "Maximo 3 imagenes", status: "info"})
+                return
+            }
+            inputUploadFileRef.current?.click()
+        } else {
+            inputUpdateFileRef.current?.click()
+        }
+    }
+
+    if (!building) {
+        if (loading) {
+            return (
+                <Box>
+                    <BackNavBar title={`Editar imagenes`}/>    
+                    <Box pt={10} display="flex" justifyContent="center">
+                        <Spinner size="xl"/>
+                    </Box>
+                </Box>
+            )
+        } else {
+            return (
+                <Box>
+                    <BackNavBar title={`Editar imagenes`}/>
+                    <Text>Ocurrió un error</Text>
+                </Box>
+            )
+        }
+    }
 
     return (
-        <Box>
+        <>
             <BackNavBar title={`Editar imagenes`}/>    
 
-            <Box display="flex" justifyContent="center">
-                <VStack flex={1} maxW="600px" pt={{"base": 5, "md": 10}} px={5}>
-                    <Text fontSize="lg" pb={3} fontWeight="bold">{building.name}</Text>
+            <ConfirmationDialog 
+                message="¿Seguro que quieres eliminar la imagen?"
+                confirmationText="Eliminar" isLoading={loading}
+                isOpen={imageToDelete !== undefined} onClose={() => setImageToDelete(undefined)}
+                onYes={() => callDeleteImage(imageToDelete)}/>
 
-                    {building.building_images.length == 0 && <Box pb={2}><Text>No hay imagenes</Text></Box>}
+            <Box display="flex" flexDir="column" alignItems="center" px={2}>
 
-                    {/* Images */}
-                    <HStack overflowX="scroll" position="relative" w="full">
-                        {building.building_images.map((image: BuildingImageRetrieve) => (
-                            <Box key={image.image.id}
-                                position="relative" >
-                                <Image 
-                                    src={OpenAPI.BASE + image.image.original}
-                                    width={48} height={40} rounded="lg"
-                                    />
+                <Text fontSize="lg" py={5} fontWeight="bold">{building.name}</Text>
 
-                                <Box pos="absolute" top={0} bottom={0} right={0} left={0}
-                                    rounded="lg"
-                                    bgGradient="linear(blackAlpha.500, blackAlpha.50, blackAlpha.50)">
-                                    <Box pos="absolute" top={0} right={0} p={1}>
-                                        <IconButton rounded="full" variant="outline" color="white" aria-label="Delete" icon={<DeleteIcon />}/>
-                                    </Box>
-                                </Box>
+                {building.building_images.length == 0 && <Box pb={2}><Text>No hay imagenes</Text></Box>}
+
+                {/* Images */}
+                <HStack overflowX="scroll" w="full" justify={{base: "start", sm: "center"}}>
+                    {building.building_images.map((image: BuildingImageRetrieve) => (
+                        <Box key={image.image.id}
+                            position="relative" flexShrink={0} width={40}>
+                            <Image 
+                                src={OpenAPI.BASE + image.image.original}
+                                
+                                width={48} height={40} rounded="lg"/>
+
+                            <Box pos="absolute" top={0} bottom={0} right={0} left={0} rounded="lg"
+                                bgGradient="linear(blackAlpha.500, blackAlpha.50, blackAlpha.50)">
+                                <HStack pos="absolute" top={0} right={0} p={1}>
+                                    <IconButton 
+                                        onClick={() => {
+                                            setImageToUpdate(image)
+                                            handlePickImage("update")
+                                        }}
+                                        rounded="full" variant="outline" color="white"
+                                        size="sm"
+                                        aria-label="Delete" icon={<EditIcon  />}/>
+                                    
+                                    <IconButton 
+                                        onClick={() => setImageToDelete(image)}
+                                        rounded="full" variant="outline" color="white"
+                                        size="sm"
+                                        aria-label="Delete" icon={<DeleteIcon />}/>
+                                </HStack>
                             </Box>
-                        ))}
-                    </HStack>
+                        </Box>
+                    ))}
+                </HStack>
 
-                    <input type="file"
-                        ref={inputFileRef}
-                        style={{display: "none"}}
-                        onChange={handleOnChangeImage}
-                        accept="image/x-png,image/gif,image/jpeg"
-                        multiple/>
+                <input type="file"
+                    ref={inputUploadFileRef}
+                    style={{display: "none"}}
+                    onChange={handleOnChangeUploadImage}
+                    accept="image/x-png,image/gif,image/jpeg"
+                    multiple/>
+                
+                <input type="file"
+                    ref={inputUpdateFileRef}
+                    style={{display: "none"}}
+                    onChange={handleOnChangeUpdateImage}
+                    accept="image/x-png,image/gif,image/jpeg"/>
 
-                    <Button onClick={handleOnPickImage} colorScheme="teal">Subir imagen</Button>
-                </VStack>
+                <Button onClick={() => handlePickImage("upload")} 
+                    isLoading={loading}
+                    colorScheme="teal"  mt={5}>
+                    Subir imagen
+                </Button>
             </Box>
-        </Box>
+        </>
     )
 }
 
