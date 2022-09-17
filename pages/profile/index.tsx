@@ -1,10 +1,9 @@
-import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader,
-        AlertDialogOverlay, Box, Button, Divider, Heading, HStack, Spinner, Text, useDisclosure, VStack } from "@chakra-ui/react"
+import { Box, Button, Divider, HStack, Spinner, Text, useDisclosure, VStack } from "@chakra-ui/react"
 import BackNavBar from "components/BackNavBar"
+import ConfirmationDialog from "components/ConfirmationDialog"
 import { signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { FC, useRef } from "react"
 
 
 const ProfilePage = () => {
@@ -16,7 +15,9 @@ const ProfilePage = () => {
         <>
             <BackNavBar title="Perfil" to={router.query.p?.toString() || "/"}/>
 
-            <OnLogoutAlarmDialog
+            <ConfirmationDialog 
+                message="¿Seguro que quieres cerrar sesión?"
+                confirmationText="Cerrar sesión"
                 isOpen={isLogoutAlarmOpen} onClose={onToggleLogoutAlarm}
                 onYes={signOut}/>
 
@@ -72,45 +73,6 @@ const ProfilePage = () => {
                     </HStack>
                 </Box>
             </VStack>
-        </>
-    )
-}
-
-
-interface OnLogoutAlarmDialogProps {
-    isOpen: boolean
-    onClose: () => void
-    onYes: () => void
-}
-
-const OnLogoutAlarmDialog: FC<OnLogoutAlarmDialogProps> = ({isOpen, onClose, onYes}) => {
-    const cancelRef = useRef<any>()
-
-    return (
-        <>
-            <AlertDialog
-                isOpen={isOpen}
-                leastDestructiveRef={cancelRef}
-                onClose={onClose}
-                isCentered
-            >
-                <AlertDialogOverlay>
-                    <AlertDialogContent mx={5}>
-                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                            ¿Seguro que quieres cerrar sesión?
-                        </AlertDialogHeader>
-
-                        <AlertDialogFooter>
-                            <Button ref={cancelRef} onClick={onClose}>
-                                Cancelar
-                            </Button>
-                            <Button colorScheme='red' onClick={() => onYes()} ml={3}>
-                                Cerrar sesión
-                            </Button>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialogOverlay>
-            </AlertDialog>
         </>
     )
 }

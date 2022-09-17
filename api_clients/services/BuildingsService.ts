@@ -6,7 +6,6 @@ import type { Body_Buildings_update_building_image } from '../models/Body_Buildi
 import type { BuildingCreate } from '../models/BuildingCreate';
 import type { BuildingList } from '../models/BuildingList';
 import type { BuildingRetrieve } from '../models/BuildingRetrieve';
-import type { ImageRetrieve } from '../models/ImageRetrieve';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -167,7 +166,7 @@ export class BuildingsService {
      * @param universitySlug
      * @param buildingId
      * @param formData
-     * @returns ImageRetrieve Successful Response
+     * @returns BuildingRetrieve Successful Response
      * @throws ApiError
      */
     public static buildingsUpdateBuildingImage(
@@ -175,7 +174,7 @@ export class BuildingsService {
         universitySlug: string,
         buildingId: number,
         formData: Body_Buildings_update_building_image,
-    ): CancelablePromise<ImageRetrieve> {
+    ): CancelablePromise<BuildingRetrieve> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/v1/universities/{university_slug}/buildings/{building_id}/images/{image_id}/',
