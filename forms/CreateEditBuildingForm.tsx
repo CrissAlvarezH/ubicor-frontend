@@ -13,7 +13,7 @@ const CreateBuildingFormSchema = Yup.object().shape({
     name: Yup.string().required(),
     code: Yup.string().required(),
     position: Yup.object().required(),
-    zone: Yup.object().required()
+    zone: Yup.string().required()
 })
 
 interface BuildingFormPosition {
@@ -25,15 +25,16 @@ export interface BuildingFormData {
     name: string
     code: string
     position?: BuildingFormPosition
-    zone?: BuildingZoneRetrieve
+    zone?: string
 }
 
 interface CreateEditBuildingFormProps {
     initialValues: BuildingFormData
+    buttonText: string
     onSubmit: (data: BuildingFormData) => void
 }
 
-const CreateEditBuildingForm: FC<CreateEditBuildingFormProps> = ({onSubmit, initialValues}) => {
+const CreateEditBuildingForm: FC<CreateEditBuildingFormProps> = ({onSubmit, initialValues, buttonText}) => {
     const router = useRouter()
     const {isOpen: isSetPositionDialogOpen, onToggle: onToggleSetPositionDialog} = useDisclosure()
     
@@ -93,6 +94,7 @@ const CreateEditBuildingForm: FC<CreateEditBuildingFormProps> = ({onSubmit, init
                                     <Box h={52}>
                                         <SimpleMap
                                             center={values.position}
+                                            zoom={19}
                                             markers={[values.position]}
                                             options={{gestureHandling: "none"}}/>
                                     </Box>
@@ -110,7 +112,7 @@ const CreateEditBuildingForm: FC<CreateEditBuildingFormProps> = ({onSubmit, init
                         <Button 
                             w="100%" mt={10} type="submit"
                             isLoading={isSubmitting} colorScheme="teal">
-                            Crear bloque
+                            {buttonText}
                         </Button>
                     </Form>
                 )}
@@ -162,6 +164,7 @@ const MapSetPositionDialog: FC<MapSetPositionDialogProps> = ({mapCenter, isOpen,
                     </Box>
                     <SimpleMap 
                         center={mapCenter}
+                        zoom={19}
                         onLoad={(map) => setMap(map)}/>
                 </Box>
                 <HStack justify="end">

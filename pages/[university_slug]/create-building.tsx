@@ -31,7 +31,7 @@ const CreateBuildingPage = () => {
         const body: BuildingCreate = {
             ...data,
             position: data.position || {lat: 0.0, lng: 0.0},
-            zone: data.zone!.name
+            zone: data.zone || ""
         }
         try {
             const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
@@ -50,7 +50,8 @@ const CreateBuildingPage = () => {
             <Box display="flex" justifyContent="center">
                 <CreateEditBuildingForm 
                     initialValues={{name: "", code: "", position: undefined, zone: undefined}}
-                    onSubmit={handleCreateBuilding}/>
+                    onSubmit={handleCreateBuilding}
+                    buttonText="Crear bloque"/>
             </Box>
         </MapWrapper>
     )

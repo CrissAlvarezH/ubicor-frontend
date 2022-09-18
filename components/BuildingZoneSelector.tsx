@@ -9,8 +9,8 @@ import { FC, useEffect, useState } from "react"
 
 interface BuildingZoneSelectorProps {
     university_slug: string
-    zoneSelected?: BuildingZoneRetrieve
-    onZoneSelected: (zone?: BuildingZoneRetrieve) => void
+    zoneSelected?: string
+    onZoneSelected: (zone?: string) => void
 }
 
 const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, zoneSelected, onZoneSelected}) => {
@@ -86,9 +86,9 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
                     {zones.length > 0 && (
                         <HStack flex={1} p={1} spacing={0} flexWrap="wrap">
                             {zones.map(zone => (
-                                <Box key={zone.id} p={1} onClick={() => onZoneSelected(zone)}>
+                                <Box key={zone.id} p={1} onClick={() => onZoneSelected(zone.name)}>
                                     <Tag size="lg" borderRadius="full" variant="solid" 
-                                        colorScheme={zone == zoneSelected ? "green" : "gray"}>
+                                        colorScheme={zone.name == zoneSelected ? "green" : "gray"}>
                                         <TagLabel>Zona {zone.name}</TagLabel>
                                         <TagCloseButton onClick={() => handleOnDeleteZone(zone)}/>
                                     </Tag>
@@ -128,11 +128,10 @@ const CreateZoneDialog: FC<CreateZoneDialogProps> = ({isOpen, onClose, onCreateZ
         }
 
         setIsLoading(true)
-
-        BuildingZonesService.buildingZonesCreate({
-            university_slug: router.query.university_slug?.toString(),
-            name: name
-        }).then(resp => {
+        const uni_slug = router.query.university_slug?.toString() 
+        BuildingZonesService.buildingZonesCreate(
+            uni_slug, {university_slug: uni_slug, name: name}
+        ).then(resp => {
             onCreateZone(resp)
             setIsLoading(false)
             onClose()
