@@ -1,4 +1,4 @@
-import { Box, Heading, Badge, Container } from "@chakra-ui/react";
+import { Box, Heading, Badge, Container, VStack, Divider } from "@chakra-ui/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import ImageSlider from "components/ImageSlider"
 import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve } from "api_clients";
@@ -6,6 +6,7 @@ import { zoneColorSchemas } from "utils/styles"
 import BuildingFloorList from "components/BuildingFloorList"
 import BackNavBar from "components/BackNavBar";
 import { useRouter } from "next/router";
+import { MapWrapper, SimpleMap } from "components/SimpleMap";
 
 
 interface BuildingPageProps {
@@ -28,7 +29,7 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
     }
 
     return (
-        <>
+        <MapWrapper>
             <BackNavBar 
                 title={`Bloque ${building.code}`}
                 menuActions={["Editar datos", "Editar imagenes"]}
@@ -49,11 +50,20 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
                         Zona {building.zone}
                     </Badge>
                 </Box>
+
+                {/* Map */}
+                <VStack shadow="md" h={56} spacing="none">
+                    <SimpleMap 
+                        zoom={18}
+                        markers={[building.position]}
+                        center={building.position}
+                        options={{gestureHandling: "none"}}/>
+                </VStack>
                 
                 {/* Building rooms */}
                 <BuildingFloorList rooms={building.rooms}/>
             </Container>
-        </>
+        </MapWrapper>
     )
 }
 
