@@ -44,6 +44,7 @@ const CreateBuildingPage = () => {
         try {
             const resp = await BuildingsService.buildingsCreate(router.query.university_slug!!.toString(), body)
             console.log(resp)
+            router.replace(`/${router.query.university_slug}/buildings/${resp.id}/edit/images`)
         } catch (error: any) {
             console.log("ERROR", error.body)
             toast({title: error?.body.detail, status: "error"})

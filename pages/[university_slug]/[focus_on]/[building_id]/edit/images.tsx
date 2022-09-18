@@ -171,7 +171,10 @@ const EditBuildingPage: NextPage = (props) => {
 
     return (
         <>
-            <BackNavBar title={`Editar imagenes`}/>    
+            <BackNavBar 
+                title={"Editar imagenes"}
+                buttons={["OK"]}
+                onButtonClick={(b) => router.replace(`/${router.query.university_slug}/buildings/${router.query.building_id}`)}/>    
 
             <ConfirmationDialog 
                 message="¿Seguro que quieres eliminar la imagen?"
