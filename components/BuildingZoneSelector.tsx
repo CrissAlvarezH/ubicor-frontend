@@ -41,7 +41,7 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
     }, [sessionStatus])
 
     const handleOnDeleteZone = (zone: BuildingZoneRetrieve) => {
-        BuildingZonesService.buildingZonesDelete(zone.id)
+        BuildingZonesService.buildingZonesDelete(zone.id, university_slug)
             .then(resp => {
                 setZones(zones.filter(z => z.id != zone.id))
             })
