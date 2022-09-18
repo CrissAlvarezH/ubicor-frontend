@@ -31,8 +31,8 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
         <>
             <BackNavBar 
                 title={`Bloque ${building.code}`}
-                actions={["Editar datos", "Editar imagenes"]}
-                onActionClick={handleMenuActionSelected}/>
+                menuActions={["Editar datos", "Editar imagenes"]}
+                onMenuActionClick={handleMenuActionSelected}/>
 
             {/* Image slider */}
             <ImageSlider images={imageUrls}/>
