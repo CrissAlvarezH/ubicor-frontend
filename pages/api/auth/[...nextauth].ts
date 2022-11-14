@@ -35,17 +35,17 @@ export const authOptions: NextAuthOptions = {
                 return null // null when fails
             }
         }),
-        GoogleProvider({
-            clientId: process.env.AUTH_GOOGLE_ID || "",
-            clientSecret: process.env.AUTH_GOOGLE_SECRET || "",
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
-        })
+        // GoogleProvider({
+        //     clientId: process.env.AUTH_GOOGLE_ID || "",
+        //     clientSecret: process.env.AUTH_GOOGLE_SECRET || "",
+        //     authorization: {
+        //         params: {
+        //             prompt: "consent",
+        //             access_type: "offline",
+        //             response_type: "code"
+        //         }
+        //     }
+        // })
     ],
 
     pages: {
