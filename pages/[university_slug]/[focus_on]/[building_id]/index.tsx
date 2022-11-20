@@ -1,4 +1,4 @@
-import { Box, Heading, Badge, Container, VStack, Divider } from "@chakra-ui/react";
+import { Box, Heading, Badge, Container, VStack, Divider, useDisclosure } from "@chakra-ui/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import ImageSlider from "components/ImageSlider"
 import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve } from "api_clients";
@@ -7,6 +7,7 @@ import BuildingFloorList from "components/BuildingFloorList"
 import BackNavBar from "components/BackNavBar";
 import { useRouter } from "next/router";
 import { MapWrapper, SimpleMap } from "components/SimpleMap";
+import CreateRoomModal from "components/CreateRoomModal";
 
 
 interface BuildingPageProps {
@@ -15,6 +16,9 @@ interface BuildingPageProps {
 
 const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps) => {
     const router = useRouter()
+
+    const {isOpen: isOpenCreateRoomModal, onToggle: onToggleCreateRoomModal, onClose: onCloseCreateRoomModal} = useDisclosure()
+
     const imageUrls = building.building_images.map((i) => i.image.original)
 
     function handleMenuActionSelected(action: string) {
@@ -25,6 +29,9 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
             case "Editar imagenes":
                 router.push(`/${router.query.university_slug}/buildings/${router.query.building_id}/edit/images`)
                 break;
+            case "Agregar salón":
+                onToggleCreateRoomModal()
+                break;
         }
     }
 
@@ -32,8 +39,11 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
         <MapWrapper>
             <BackNavBar 
                 title={`Bloque ${building.code}`}
-                menuActions={["Editar datos", "Editar imagenes"]}
+                menuActions={["Editar datos", "Editar imagenes", "Agregar salón"]}
                 onMenuActionClick={handleMenuActionSelected}/>
+
+            {/* Modal to add room */}
+            <CreateRoomModal onClose={onCloseCreateRoomModal} isOpen={isOpenCreateRoomModal}/>
 
             {/* Image slider */}
             <ImageSlider images={imageUrls}/>
