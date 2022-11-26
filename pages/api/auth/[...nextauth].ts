@@ -26,7 +26,8 @@ export const authOptions: NextAuthOptions = {
                             id: resp.user.id,
                             email: resp.user.email,
                             name: resp.user.full_name,
-                            access_token: resp.access_token
+                            access_token: resp.access_token,
+                            scopes: resp.user.scopes
                         }
                     } catch (error: any) {
                         console.log("AUTH ERROR", error)
@@ -74,6 +75,7 @@ export const authOptions: NextAuthOptions = {
                     return refreshAccessToken(token)
                 } else if (account.provider === "credentials") {
                     token.access_token = user?.access_token
+                    token.scopes = user?.scopes
                 }
             }
 
