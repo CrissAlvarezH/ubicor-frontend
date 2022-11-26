@@ -6,6 +6,7 @@ import { zoneColorSchemas } from "utils/styles"
 import BuildingFloorList from "components/BuildingFloorList"
 import BackNavBar from "components/BackNavBar";
 import { useRouter } from "next/router";
+import Router from "next/router"
 import { MapWrapper, SimpleMap } from "components/SimpleMap";
 import CreateRoomModal from "components/CreateRoomModal";
 
@@ -43,7 +44,10 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
                 onMenuActionClick={handleMenuActionSelected}/>
 
             {/* Modal to add room */}
-            <CreateRoomModal onClose={onCloseCreateRoomModal} isOpen={isOpenCreateRoomModal}/>
+            <CreateRoomModal
+                onClose={onCloseCreateRoomModal}
+                isOpen={isOpenCreateRoomModal}
+                onCreateRoom={() => Router.reload()}/>
 
             {/* Image slider */}
             <ImageSlider images={imageUrls}/>

@@ -1,10 +1,11 @@
-import { Box, Button, HStack, Input, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Text, VStack } from "@chakra-ui/react";
-import { FC } from "react";
+import { Box, Button, HStack, Input, Modal, ModalBody, ModalContent, ModalHeader, ModalOverlay, Text, useToast, VStack } from "@chakra-ui/react";
+import { FC, useEffect } from "react";
 import { Form, Formik } from "formik"
 import * as Yup from "yup"
 import InputField from "./InputField";
-import { RoomCreate, RoomsService } from "api_clients";
+import { OpenAPI, RoomCreate, RoomsService } from "api_clients";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 
 const CreateRoomFormSchema = Yup.object().shape({
@@ -28,11 +29,24 @@ interface CreateRoomFormData {
 interface CreateRoomModalProps {
     onClose: () => void
     isOpen: boolean
+    onCreateRoom: () => void
 }
 
-const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen}) => {
+const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen, onCreateRoom}) => {
     const router = useRouter()
+    const toast = useToast()
+    const {data: userData, status: sessionStatus} = useSession()
 
+    useEffect(() => {
+        switch(sessionStatus) {
+            case "unauthenticated":
+                toast({title: "Debe estar autenticado", status: "error"})
+                break
+            case "authenticated":
+                OpenAPI.TOKEN = userData?.access_token as string
+                break
+        }
+    }, [sessionStatus])
 
     async function onSubmitRoom(data: CreateRoomFormData) {
         const body: RoomCreate = {
@@ -41,17 +55,16 @@ const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen}) => {
         }
 
         try {
-
-            const resp = await RoomsService.roomsCreate(
+            await RoomsService.roomsCreate(
                 router.query.university_slug!.toString(),
                 Number.parseInt(router.query.building_id!.toString()),
                 body
             )
-
-            // TODO attend response
+            onClose()
+            onCreateRoom()
         } catch (error: any) {
             console.log("ERROR", error.body)
-            // TODO show toast
+            toast({title: error?.body?.detail, status: "error"})
         }
     }
 
@@ -66,7 +79,7 @@ const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen}) => {
                             initialValues={initialValues}
                             validationSchema={CreateRoomFormSchema}
                             validateOnBlur={false}
-                            onSubmit={(data) => console.log(data)}
+                            onSubmit={onSubmitRoom}
                             >
                             {({isSubmitting, values, errors}) => (
                                 <Form>
