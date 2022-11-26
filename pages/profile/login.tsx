@@ -58,7 +58,7 @@ const LoginPage = () => {
                         )}
                     </Formik>
 
-                    <HStack pb={6}>
+                    {/* <HStack pb={6}>
                         <Divider/>
                         <Text flexShrink={0} color="gray.600">o si lo prefires, puedes</Text>
                         <Divider />
@@ -70,7 +70,7 @@ const LoginPage = () => {
                             iconSpacing={3} leftIcon={<GoogleIcon />}>
                             Ingresar con Google
                         </Button>
-                    </VStack>
+                    </VStack> */}
                 </VStack>
             </Box>
         </>

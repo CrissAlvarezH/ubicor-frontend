@@ -1,14 +1,63 @@
-import { Box, useMediaQuery } from "@chakra-ui/react"
-import { RoomRetrieve } from "api_clients"
-import { FC, useEffect } from "react"
+import { Box, useDisclosure, useToast } from "@chakra-ui/react"
+import { OpenAPI, RoomRetrieve, RoomsService } from "api_clients"
+import { useSession } from "next-auth/react"
+import Router, { useRouter } from "next/router"
+import { FC, useEffect, useState } from "react"
+import { Scopes } from "utils/constants"
 import BuildingFloor from "./BuildingFloor"
+import ConfirmationDialog from "./ConfirmationDialog"
 
 
 interface BuildingFloorListProps {
     rooms: RoomRetrieve[]
+    onRemoveRoom: (room: RoomRetrieve) => void
 }
 
-const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}: BuildingFloorListProps) => {
+const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms, onRemoveRoom}) => {
+    const router = useRouter()
+    const toast = useToast()
+    const {
+        isOpen: isOpenDeleteRoomConfirmation,
+        onToggle: onToggleDeleteRoomConfirmation,
+        onClose: onCloseDeleteRoomConfirmation
+    } = useDisclosure()
+    const [roomToDelete, setRoomToDelete] = useState<RoomRetrieve>()
+    const {data: userData, status: sessionStatus} = useSession()
+    const [showAdminButtons, setShowAdminButtons] = useState(false)
+
+    useEffect(() => {
+        if (sessionStatus == "authenticated") {
+            OpenAPI.TOKEN = userData.access_token as string
+            if (userData.scopes.includes(Scopes.EDIT_BUILDINGS)) {
+                setShowAdminButtons(true)
+            }
+        }
+    }, [sessionStatus])
+
+    async function handleOnDeleteRoom(room: RoomRetrieve) {
+        setRoomToDelete(room)
+        onToggleDeleteRoomConfirmation()
+    }
+
+    async function handleOnConfirmationDeleteRoom() {
+        if (!roomToDelete) {
+            toast({title: "Debe seleccionar el salón a borrar", status: "error"})
+            return 
+        }
+        try {
+            await RoomsService.roomsDelete(
+                router.query.university_slug as string,
+                roomToDelete.id
+            )
+            onCloseDeleteRoomConfirmation()
+            Router.reload()
+        } catch (error: any) {
+            console.log("ERROR", error.body)
+            toast({title: error?.body?.details, status: "error"})
+        }
+    }
+
+
     let floors = rooms.map(r => r.floor) // get room floors
     floors = floors.filter((f, i) => floors.indexOf(f) == i) // eliminate duplicates
 
@@ -18,6 +67,13 @@ const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}: BuildingFloorLis
 
     return (
         <Box>
+
+            <ConfirmationDialog 
+                message={`¿Seguro que quiere elimnar el salón "${roomToDelete?.name}"?`}
+                confirmationText="Eliminar"
+                isOpen={isOpenDeleteRoomConfirmation} onClose={onCloseDeleteRoomConfirmation}
+                onYes={handleOnConfirmationDeleteRoom}/>
+
             <Box display={{"base": "none", "md":"flex"}} p={1}>
                 <Box flex={1}>
                     {
@@ -25,6 +81,8 @@ const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}: BuildingFloorLis
                             <Box key={f} p={1}>
                                 <BuildingFloor
                                     floor={f}
+                                    showAdminButtons={showAdminButtons}
+                                    onDeleteRoom={handleOnDeleteRoom}
                                     rooms={rooms.filter(r => r.floor == f)}/>
                             </Box>
                         ))
@@ -36,6 +94,8 @@ const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}: BuildingFloorLis
                             <Box key={f} p={1}>
                                 <BuildingFloor
                                     floor={f}
+                                    showAdminButtons={showAdminButtons}
+                                    onDeleteRoom={handleOnDeleteRoom}
                                     rooms={rooms.filter(r => r.floor == f)}/>
                             </Box>
                         ))
@@ -49,6 +109,8 @@ const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}: BuildingFloorLis
                         <Box key={f} p={1}>
                             <BuildingFloor
                                 floor={f}
+                                showAdminButtons={showAdminButtons}
+                                onDeleteRoom={handleOnDeleteRoom}
                                 rooms={rooms.filter(r => r.floor == f)}/>
                         </Box>
                     ))

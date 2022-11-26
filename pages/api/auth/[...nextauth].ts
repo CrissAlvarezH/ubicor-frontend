@@ -26,7 +26,8 @@ export const authOptions: NextAuthOptions = {
                             id: resp.user.id,
                             email: resp.user.email,
                             name: resp.user.full_name,
-                            access_token: resp.access_token
+                            access_token: resp.access_token,
+                            scopes: resp.user.scopes
                         }
                     } catch (error: any) {
                         console.log("AUTH ERROR", error)
@@ -35,17 +36,17 @@ export const authOptions: NextAuthOptions = {
                 return null // null when fails
             }
         }),
-        GoogleProvider({
-            clientId: process.env.AUTH_GOOGLE_ID || "",
-            clientSecret: process.env.AUTH_GOOGLE_SECRET || "",
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
-        })
+        // GoogleProvider({
+        //     clientId: process.env.AUTH_GOOGLE_ID || "",
+        //     clientSecret: process.env.AUTH_GOOGLE_SECRET || "",
+        //     authorization: {
+        //         params: {
+        //             prompt: "consent",
+        //             access_type: "offline",
+        //             response_type: "code"
+        //         }
+        //     }
+        // })
     ],
 
     pages: {
@@ -54,7 +55,6 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async jwt({ token, account, user }) {
-            console.log("jwt", {token, account, user})
             if (account && token.name && token.email) {
                 if (account.provider === "google") {
                     // register if not exist on backend
@@ -75,6 +75,7 @@ export const authOptions: NextAuthOptions = {
                     return refreshAccessToken(token)
                 } else if (account.provider === "credentials") {
                     token.access_token = user?.access_token
+                    token.scopes = user?.scopes
                 }
             }
 
