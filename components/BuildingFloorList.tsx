@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import Router, { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
 import { Scopes } from "utils/constants"
+import { useApiErrorHandler } from "utils/errors"
 import BuildingFloor from "./BuildingFloor"
 import ConfirmationDialog from "./ConfirmationDialog"
 
@@ -16,6 +17,7 @@ interface BuildingFloorListProps {
 const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms, onRemoveRoom}) => {
     const router = useRouter()
     const toast = useToast()
+    const apiErrorHandler = useApiErrorHandler()
     const {
         isOpen: isOpenDeleteRoomConfirmation,
         onToggle: onToggleDeleteRoomConfirmation,
@@ -52,8 +54,7 @@ const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms, onRemoveRoom}) =>
             onCloseDeleteRoomConfirmation()
             Router.reload()
         } catch (error: any) {
-            console.log("ERROR", error.body)
-            toast({title: error?.body?.details, status: "error"})
+            apiErrorHandler(error)
         }
     }
 

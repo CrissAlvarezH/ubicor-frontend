@@ -6,6 +6,7 @@ import InputField from "./InputField";
 import { OpenAPI, RoomCreate, RoomsService } from "api_clients";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { useApiErrorHandler } from "utils/errors";
 
 
 const CreateRoomFormSchema = Yup.object().shape({
@@ -35,6 +36,7 @@ interface CreateRoomModalProps {
 const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen, onCreateRoom}) => {
     const router = useRouter()
     const toast = useToast()
+    const apiErrorHandler = useApiErrorHandler()
     const {data: userData, status: sessionStatus} = useSession()
 
     useEffect(() => {
@@ -63,8 +65,7 @@ const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen, onCreateRoo
             onClose()
             onCreateRoom()
         } catch (error: any) {
-            console.log("ERROR", error.body)
-            toast({title: error?.body?.detail, status: "error"})
+            apiErrorHandler(error)
         }
     }
 

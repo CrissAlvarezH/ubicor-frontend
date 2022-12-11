@@ -6,10 +6,12 @@ import { MapWrapper } from "components/SimpleMap"
 import { BuildingCreate, BuildingsService, OpenAPI } from "api_clients"
 import { useSession } from "next-auth/react"
 import CreateEditBuildingForm, { BuildingFormData } from "forms/CreateEditBuildingForm"
+import { useApiErrorHandler } from "utils/errors"
 
 
 const CreateBuildingPage = () => {
     const toast = useToast()
+    const apiErrorHandler = useApiErrorHandler()
     const {data: userData, status: sessionStatus} = useSession()
     const router = useRouter()
 
@@ -38,8 +40,7 @@ const CreateBuildingPage = () => {
             console.log(resp)
             router.replace(`/${router.query.university_slug}/buildings/${resp.id}/edit/images`)
         } catch (error: any) {
-            console.log("ERROR", error.body)
-            toast({title: error?.body.detail, status: "error"})
+            apiErrorHandler(error)
         }
     }
     

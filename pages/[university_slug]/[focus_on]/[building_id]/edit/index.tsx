@@ -7,6 +7,7 @@ import { BuildingCreate, BuildingRetrieve, BuildingsService, OpenAPI } from "api
 import { useSession } from "next-auth/react"
 import CreateEditBuildingForm, { BuildingFormData } from "forms/CreateEditBuildingForm"
 import { GetServerSideProps, NextPage } from "next"
+import { useApiErrorHandler } from "utils/errors"
 
 
 interface EditBuildingPageProps {
@@ -15,6 +16,7 @@ interface EditBuildingPageProps {
 
 const EditBuildingPage: NextPage<EditBuildingPageProps> = ({building}) => {
     const toast = useToast()
+    const apiErrorHandler = useApiErrorHandler()
     const {data: userData, status: sessionStatus} = useSession()
     const router = useRouter()
 
@@ -47,8 +49,7 @@ const EditBuildingPage: NextPage<EditBuildingPageProps> = ({building}) => {
             console.log(resp)
             router.replace(`/${router.query.university_slug}/buildings/${resp.id}`)
         } catch (error: any) {
-            console.log("ERROR", error.body)
-            toast({title: error?.body.detail, status: "error"})
+            apiErrorHandler(error)
         }
     }
     
