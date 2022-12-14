@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
+import { Scopes } from "utils/constants"
 import { ProfileIcon } from "./Icons"
 
 
@@ -38,9 +39,13 @@ const NavBar: FC<NavBarProps> = ({title, onSearchClick, onAddClick}) => {
                         onClick={() => onSearchClick()}
                         variant="ghost" aria-label="Search" icon={<SearchIcon />}/>
                     
-                    <IconButton
-                        onClick={() => onAddClick && onAddClick()}
-                        variant="ghost" aria-label="Create building" icon={<AddIcon />}/>
+                    {
+                        data?.scopes.includes(Scopes.CREATE_BUILDINGS) && (
+                            <IconButton
+                                onClick={() => onAddClick && onAddClick()}
+                                variant="ghost" aria-label="Create building" icon={<AddIcon />}/>
+                        )
+                    }
 
                     {
                         status === "loading" ? <Box px={2}><Spinner /></Box> : (
