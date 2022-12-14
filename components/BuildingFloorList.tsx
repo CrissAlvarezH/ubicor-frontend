@@ -11,10 +11,9 @@ import ConfirmationDialog from "./ConfirmationDialog"
 
 interface BuildingFloorListProps {
     rooms: RoomRetrieve[]
-    onRemoveRoom: (room: RoomRetrieve) => void
 }
 
-const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms, onRemoveRoom}) => {
+const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}) => {
     const router = useRouter()
     const toast = useToast()
     const apiErrorHandler = useApiErrorHandler()
