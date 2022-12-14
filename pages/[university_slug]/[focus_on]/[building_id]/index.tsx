@@ -1,7 +1,7 @@
 import { Box, Heading, Badge, Container, VStack, Divider, useDisclosure } from "@chakra-ui/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import ImageSlider from "components/ImageSlider"
-import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve } from "api_clients";
+import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve, OpenAPI } from "api_clients";
 import { zoneColorSchemas } from "utils/styles"
 import BuildingFloorList from "components/BuildingFloorList"
 import BackNavBar from "components/BackNavBar";
@@ -9,6 +9,9 @@ import { useRouter } from "next/router";
 import Router from "next/router"
 import { MapWrapper, SimpleMap } from "components/SimpleMap";
 import CreateRoomModal from "components/CreateRoomModal";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { Scopes } from "utils/constants";
 
 
 interface BuildingPageProps {
@@ -17,10 +20,18 @@ interface BuildingPageProps {
 
 const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps) => {
     const router = useRouter()
-
+    const [menuActions, setMenuActions] = useState<string[]>([])
     const {isOpen: isOpenCreateRoomModal, onToggle: onToggleCreateRoomModal, onClose: onCloseCreateRoomModal} = useDisclosure()
+    const {data: userData, status: sessionStatus} = useSession()
 
-    const imageUrls = building.building_images.map((i) => i.image.original)
+    useEffect(() => {
+        if (sessionStatus == "authenticated") {
+            OpenAPI.TOKEN = userData.access_token as string
+            if (userData.scopes.includes(Scopes.EDIT_BUILDINGS)) {
+                setMenuActions(["Editar datos", "Editar imagenes", "Agregar salón"])
+            }
+        }
+    }, [sessionStatus])
 
     function handleMenuActionSelected(action: string) {
         switch (action) {
@@ -36,11 +47,12 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
         }
     }
 
+    const imageUrls = building.building_images.map((i) => i.image.original)
     return (
         <MapWrapper>
             <BackNavBar 
                 title={`Bloque ${building.code}`}
-                menuActions={["Editar datos", "Editar imagenes", "Agregar salón"]}
+                menuActions={menuActions}
                 onMenuActionClick={handleMenuActionSelected}/>
 
             {/* Modal to add room */}
