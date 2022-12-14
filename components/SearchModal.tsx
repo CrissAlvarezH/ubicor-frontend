@@ -3,6 +3,7 @@ import { ModalOverlay, Modal, ModalContent, ModalBody, Box, VStack, HStack, Inpu
 import { BuildingList, CancelablePromise, RoomRetrieve, RoomsService } from "api_clients"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
+import { useApiErrorHandler } from "utils/errors"
 
 
 interface SearchModalProps {
@@ -14,6 +15,7 @@ interface SearchModalProps {
 
 const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose, isOpen}: SearchModalProps) => {
     const router = useRouter()
+    const apiErrorHandler = useApiErrorHandler()
 
     const [search, setSearch] = useState<string>("")
     const [isLoadingRooms, setIsLoadingRooms] = useState(false)
@@ -37,7 +39,7 @@ const BuildingsAndRoomsSearchModal: FC<SearchModalProps> = ({buildings, onClose,
                 setIsLoadingRooms(false)
             })
             .catch((e: any) => {
-                console.error("Rooms search", e)
+                apiErrorHandler(e)
                 setIsLoadingRooms(false)
             })
         }, 900)
