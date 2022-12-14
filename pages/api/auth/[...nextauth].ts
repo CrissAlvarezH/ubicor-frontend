@@ -22,6 +22,7 @@ export const authOptions: NextAuthOptions = {
 
                     try {
                         const resp = await AuthService.authLogin(loginBody)
+                        console.log("resp login", resp)
                         return {
                             id: resp.user.id,
                             email: resp.user.email,
@@ -55,6 +56,7 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async jwt({ token, account, user }) {
+            console.log("jwt", {token}, {user}, {account})
             if (account && token.name && token.email) {
                 if (account.provider === "google") {
                     // register if not exist on backend
@@ -72,18 +74,33 @@ export const authOptions: NextAuthOptions = {
                     token.scopes = resp.user.scopes
                     token.access_token = resp.access_token
 
-                    return refreshAccessToken(token)
+                    return refreshAccessToken(token, "google")
                 } else if (account.provider === "credentials") {
                     token.access_token = user?.access_token
                     token.scopes = user?.scopes
                 }
             }
 
+            const timeNow = Math.floor(new Date().getTime()/1000.0)
+            // TODO verify where is the expiration date real, because iat is the date
+            // when the token was created and ext is a date on the future on the next year
+            // the real exp date come inside the token on exp field but it not is accessible
+            // from this token instance
+            if (token && token?.iat < timeNow) {
+                // refresh token
+                console.log("sesion expirada", token)
+                // return refreshAccessToken(token, "credentials")
+            }
+
+            // TODO refresh token for google
+
             return token
         },
         async session({ session, token, user }) {
+            console.log("session")
             session.scopes = token.scopes
             session.access_token = token.access_token
+            session.error = token.error
             return session
         }
     }
@@ -94,8 +111,34 @@ export const authOptions: NextAuthOptions = {
  * `accessToken` and `accessTokenExpires`. If an error occurs,
  * returns the old token and an error property
  */
-async function refreshAccessToken(token: any) {
+async function refreshAccessToken(token: any, provider: string) {
   try {
+
+    switch (provider) {
+        case "google":
+            return refreshGoogleAccessToken(token)
+        case "credentials":
+            return refreshCredentialsAccessToken(token)
+        default:
+            throw Error("Method not implemented")
+    }
+
+  } catch (error: any) {
+    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error?.data)
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    }
+  }
+}
+
+
+async function refreshCredentialsAccessToken(token: any) {
+    console.log("refresh api token", token)
+    return {...token, error: "RefreshAccessTokenError"}
+}
+
+async function refreshGoogleAccessToken(token: any) {
     const url =
       "https://oauth2.googleapis.com/token?" +
       new URLSearchParams({
@@ -117,14 +160,6 @@ async function refreshAccessToken(token: any) {
       accessTokenExpires: Date.now() + refreshedTokens.expires_at * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
-  } catch (error: any) {
-    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error?.data)
-
-    return {
-      ...token,
-      error: "RefreshAccessTokenError",
-    }
-  }
 }
 
 export default NextAuth(authOptions)
