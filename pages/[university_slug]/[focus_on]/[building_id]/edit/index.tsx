@@ -46,7 +46,6 @@ const EditBuildingPage: NextPage<EditBuildingPageProps> = ({building}) => {
                 Number.parseInt(router.query.building_id!.toString()),
                 body
             )
-            console.log(resp)
             router.replace(`/${router.query.university_slug}/buildings/${resp.id}`)
         } catch (error: any) {
             apiErrorHandler(error)

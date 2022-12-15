@@ -7,6 +7,7 @@ import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { useApiErrorHandler } from "utils/errors";
 
 const MAX_LENGTH_IMAGES = 3
 
@@ -20,6 +21,7 @@ const EditBuildingPage: NextPage = (props) => {
     const session = useSession()
     const router = useRouter()
     const toast = useToast()
+    const apiErrorHandler = useApiErrorHandler()
 
     useEffect(() => {
         switch (session.status) {
@@ -50,14 +52,12 @@ const EditBuildingPage: NextPage = (props) => {
             Number.parseInt(router.query!.building_id!.toString()),
             body,
         ).then((resp: BuildingRetrieve) => {
-            console.log("upload image", resp)
             setBuilding(resp)
             setLoading(false)
         })
         .catch(error => {
             setLoading(false)
-            console.log("upload image error", error)
-            toast({title: error.body.detail, status: "error"})
+            apiErrorHandler(error)
         })
     }
 
@@ -76,8 +76,7 @@ const EditBuildingPage: NextPage = (props) => {
             setLoading(false)
         }).catch(error => {
             setLoading(false)
-            console.log("update image error", error)
-            toast({title: error.body.detail, status: "error"})
+            apiErrorHandler(error)
         })
     }
 
@@ -89,8 +88,7 @@ const EditBuildingPage: NextPage = (props) => {
                 setLoading(false)
             })
             .catch(error => {
-                console.error("ERROR: edit building page", error)
-                toast({title: "Ocurrió un error, intente mas tarde", status: "error"})
+                apiErrorHandler(error)
                 setLoading(false)
             })
     }
@@ -108,8 +106,7 @@ const EditBuildingPage: NextPage = (props) => {
             setImageToDelete(undefined)
             setLoading(false)
         }).catch(error => {
-            console.error("ERROR: edit building delete", error)
-            toast({title: error.body.detail, status: "error"})
+            apiErrorHandler(error)
             setLoading(false)
         })
     }

@@ -43,7 +43,7 @@ export const SimpleMap: FC<SimpleMapProps> = ({
             options={mapOptions}
             zoom={zoom}
             center={center}
-            onClick={() => console.log("map click")}
+            onClick={() => {}}
         >
 
             {

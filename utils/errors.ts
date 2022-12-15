@@ -3,9 +3,9 @@ import { useToast, UseToastOptions } from "@chakra-ui/react"
 export function useApiErrorHandler() {
     const toast = useToast()
 
-    return (e: any) => {
+    return (e: any, defaultMessage?: string) => {
         console.log("Api Error", e, e.status)
-        const toastBody: UseToastOptions = {title: e?.body?.detail, status: "error"}
+        const toastBody: UseToastOptions = {title: defaultMessage || e?.body?.detail, status: "error"}
 
         switch (e.status) {
             case 401:

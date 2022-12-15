@@ -5,6 +5,7 @@ import { BuildingZonesService } from "api_clients/services/BuildingZonesService"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { FC, useEffect, useState } from "react"
+import { useApiErrorHandler } from "utils/errors"
 
 
 interface BuildingZoneSelectorProps {
@@ -19,6 +20,8 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
     const [zones, setZones] = useState<BuildingZoneRetrieve[]>([])
     
     const {isOpen: isCreateZoneModalOpen, onToggle: onToggleCreateZoneModal} = useDisclosure()
+
+    const apiErrorHandler = useApiErrorHandler()
 
     const toast = useToast()
 
@@ -35,7 +38,7 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
                 })
                 .catch(error => {
                     setIsLoading(false)
-                    toast({title: "Error al cargar la zonas, recargue la pagina", status: "error"})
+                    apiErrorHandler(error, "Error al cargar las zonas")
                 })
         }
     }, [sessionStatus])
@@ -46,16 +49,7 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
                 setZones(zones.filter(z => z.id != zone.id))
             })
             .catch(error => {
-                let msg = error.body.detail
-                if (error.body.detail === "this zone is been used")
-                    msg = "Esta zona esta siendo usada por otro bloque" 
-
-                toast({
-                    title: `Error al eliminar zona '${zone.name}'. ${msg}`,
-                    status: "error",
-                    isClosable: true,
-                    position: "top-right"
-                })
+                apiErrorHandler(error)
             })
     }
 
@@ -113,6 +107,7 @@ const CreateZoneDialog: FC<CreateZoneDialogProps> = ({isOpen, onClose, onCreateZ
     const [name, setName] = useState<string>("")
     const [isLoading, setIsLoading] = useState(false)
 
+    const apiErrorHandler = useApiErrorHandler()
     const router = useRouter()
     const toast = useToast()
 
@@ -138,7 +133,7 @@ const CreateZoneDialog: FC<CreateZoneDialogProps> = ({isOpen, onClose, onCreateZ
             setName("")
         })
         .catch(error => {
-            toast({title: "Error al crear la zona, " + error.body?.detail, status: "error"})
+            apiErrorHandler(error)
             setIsLoading(false)
         })
     }

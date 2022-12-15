@@ -4,6 +4,7 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import { parseJwt } from "utils/jwt"
 
 
 export const authOptions: NextAuthOptions = {
@@ -22,12 +23,14 @@ export const authOptions: NextAuthOptions = {
 
                     try {
                         const resp = await AuthService.authLogin(loginBody)
+                        const decodedToken = parseJwt(resp.access_token)
                         return {
-                            id: resp.user.id,
-                            email: resp.user.email,
-                            name: resp.user.full_name,
+                            id: decodedToken.user.id,
+                            email: decodedToken.user.email,
+                            name: decodedToken.user.full_name,
                             access_token: resp.access_token,
-                            scopes: resp.user.scopes
+                            scopes: decodedToken.user.scopes,
+                            expireAt: decodedToken.exp
                         }
                     } catch (error: any) {
                         console.log("AUTH ERROR", error)
@@ -72,18 +75,27 @@ export const authOptions: NextAuthOptions = {
                     token.scopes = resp.user.scopes
                     token.access_token = resp.access_token
 
-                    return refreshAccessToken(token)
+                    return refreshAccessToken(token, "google")
                 } else if (account.provider === "credentials") {
                     token.access_token = user?.access_token
                     token.scopes = user?.scopes
+                    token.expireAt = user?.expireAt
                 }
             }
+
+            const timeNow = Math.floor(new Date().getTime()/1000.0)
+            if (token.expireAt && token.expireAt < timeNow) {
+                return refreshAccessToken(token, "credentials")
+            }
+
+            // TODO refresh token for google
 
             return token
         },
         async session({ session, token, user }) {
             session.scopes = token.scopes
             session.access_token = token.access_token
+            session.error = token.error
             return session
         }
     }
@@ -94,8 +106,34 @@ export const authOptions: NextAuthOptions = {
  * `accessToken` and `accessTokenExpires`. If an error occurs,
  * returns the old token and an error property
  */
-async function refreshAccessToken(token: any) {
+async function refreshAccessToken(token: any, provider: string) {
   try {
+
+    switch (provider) {
+        case "google":
+            return refreshGoogleAccessToken(token)
+        case "credentials":
+            return refreshCredentialsAccessToken(token)
+        default:
+            throw Error("Method not implemented")
+    }
+
+  } catch (error: any) {
+    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error?.data)
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    }
+  }
+}
+
+
+async function refreshCredentialsAccessToken(token: any) {
+    // not doing token refreshing
+    return {...token, error: "RefreshAccessTokenError"}
+}
+
+async function refreshGoogleAccessToken(token: any) {
     const url =
       "https://oauth2.googleapis.com/token?" +
       new URLSearchParams({
@@ -114,17 +152,9 @@ async function refreshAccessToken(token: any) {
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_at * 1000,
+      expireAt: Date.now() + refreshedTokens.expires_at * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
-  } catch (error: any) {
-    console.error("AUTH REFRESH ACCESS TOKEN ERROR", error?.data)
-
-    return {
-      ...token,
-      error: "RefreshAccessTokenError",
-    }
-  }
 }
 
 export default NextAuth(authOptions)

@@ -16,19 +16,12 @@ interface UniversityPageProps {
 }
 
 const UniversityPage: NextPage<UniversityPageProps> = ({university, focus_on}: UniversityPageProps) => {
-    const {data} = useSession()
     const router = useRouter()
     const mapfocus = useRef<string|undefined>()
 
     const [buildingHover, setBuildingHover] = useState<BuildingList>()
     const {isOpen: showMap, onToggle: toggleShowMap} = useDisclosure({defaultIsOpen: focus_on === "map"})
     const {isOpen: showSearch, onToggle: toggleSearch, onClose: onCloseSearch} = useDisclosure()
-
-    useEffect(() => {
-        if (data?.error === "RefreshAccessTokenError") {
-            signIn()
-        }
-    }, [data])
 
     useEffect(() => {
         // event: user close infowindown, drop map focus
