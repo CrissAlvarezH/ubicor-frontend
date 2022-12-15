@@ -4,6 +4,7 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import { parseJwt } from "utils/jwt"
 
 
 export const authOptions: NextAuthOptions = {
@@ -22,13 +23,14 @@ export const authOptions: NextAuthOptions = {
 
                     try {
                         const resp = await AuthService.authLogin(loginBody)
-                        console.log("resp login", resp)
+                        const decodedToken = parseJwt(resp.access_token)
                         return {
-                            id: resp.user.id,
-                            email: resp.user.email,
-                            name: resp.user.full_name,
+                            id: decodedToken.user.id,
+                            email: decodedToken.user.email,
+                            name: decodedToken.user.full_name,
                             access_token: resp.access_token,
-                            scopes: resp.user.scopes
+                            scopes: decodedToken.user.scopes,
+                            expireAt: decodedToken.exp
                         }
                     } catch (error: any) {
                         console.log("AUTH ERROR", error)
@@ -56,7 +58,6 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async jwt({ token, account, user }) {
-            console.log("jwt", {token}, {user}, {account})
             if (account && token.name && token.email) {
                 if (account.provider === "google") {
                     // register if not exist on backend
@@ -78,18 +79,13 @@ export const authOptions: NextAuthOptions = {
                 } else if (account.provider === "credentials") {
                     token.access_token = user?.access_token
                     token.scopes = user?.scopes
+                    token.expireAt = user?.expireAt
                 }
             }
 
             const timeNow = Math.floor(new Date().getTime()/1000.0)
-            // TODO verify where is the expiration date real, because iat is the date
-            // when the token was created and ext is a date on the future on the next year
-            // the real exp date come inside the token on exp field but it not is accessible
-            // from this token instance
-            if (token && token?.iat < timeNow) {
-                // refresh token
-                console.log("sesion expirada", token)
-                // return refreshAccessToken(token, "credentials")
+            if (token.expireAt && token.expireAt < timeNow) {
+                return refreshAccessToken(token, "credentials")
             }
 
             // TODO refresh token for google
@@ -97,7 +93,6 @@ export const authOptions: NextAuthOptions = {
             return token
         },
         async session({ session, token, user }) {
-            console.log("session")
             session.scopes = token.scopes
             session.access_token = token.access_token
             session.error = token.error
@@ -134,7 +129,7 @@ async function refreshAccessToken(token: any, provider: string) {
 
 
 async function refreshCredentialsAccessToken(token: any) {
-    console.log("refresh api token", token)
+    // not doing token refreshing
     return {...token, error: "RefreshAccessTokenError"}
 }
 
@@ -157,7 +152,7 @@ async function refreshGoogleAccessToken(token: any) {
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens.expires_at * 1000,
+      expireAt: Date.now() + refreshedTokens.expires_at * 1000,
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     }
 }

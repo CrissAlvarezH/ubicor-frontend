@@ -40,6 +40,9 @@ const CreateRoomModal: FC<CreateRoomModalProps> = ({onClose, isOpen, onCreateRoo
     const {data: userData, status: sessionStatus} = useSession()
 
     useEffect(() => {
+        if (!isOpen)
+            return
+
         switch(sessionStatus) {
             case "unauthenticated":
                 toast({title: "Debe estar autenticado", status: "error"})

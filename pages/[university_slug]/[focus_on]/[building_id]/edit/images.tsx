@@ -52,7 +52,6 @@ const EditBuildingPage: NextPage = (props) => {
             Number.parseInt(router.query!.building_id!.toString()),
             body,
         ).then((resp: BuildingRetrieve) => {
-            console.log("upload image", resp)
             setBuilding(resp)
             setLoading(false)
         })
