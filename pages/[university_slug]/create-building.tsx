@@ -21,6 +21,7 @@ const CreateBuildingPage = () => {
                 toast({title: "Debe estar autenticado", status: "error"})
                 break
             case "authenticated":
+                // @ts-ignore
                 OpenAPI.TOKEN = userData?.access_token as string
                 break
         }

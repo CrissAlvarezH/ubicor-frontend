@@ -13,6 +13,7 @@ const NextAuthRefreshToken: FC<NextAuthRefreshTokenProps> = (props) => {
     const {data, status} = useSession()
 
     useEffect(() => {
+        // @ts-ignore
         if (data?.error == "RefreshAccessTokenError") {
             toast({title: "Su sesión a expirado", status: "warning"})
             signOut()

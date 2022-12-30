@@ -28,7 +28,9 @@ const BuildingFloorList: FC<BuildingFloorListProps> = ({rooms}) => {
 
     useEffect(() => {
         if (sessionStatus == "authenticated") {
+            // @ts-ignore
             OpenAPI.TOKEN = userData.access_token as string
+            // @ts-ignore
             if (userData.scopes.includes(Scopes.EDIT_BUILDINGS)) {
                 setShowAdminButtons(true)
             }

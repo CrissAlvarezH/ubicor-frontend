@@ -26,7 +26,9 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
 
     useEffect(() => {
         if (sessionStatus == "authenticated") {
+            // @ts-ignore
             OpenAPI.TOKEN = userData.access_token as string
+            // @ts-ignore
             if (userData.scopes.includes(Scopes.EDIT_BUILDINGS)) {
                 setMenuActions(["Editar datos", "Editar imagenes", "Agregar salón"])
             }

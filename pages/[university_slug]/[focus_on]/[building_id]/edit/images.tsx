@@ -29,6 +29,7 @@ const EditBuildingPage: NextPage = (props) => {
                 toast({title: "Tiene que estar autenticado", status: "error"})
                 break;
             case "authenticated":
+                // @ts-ignore
                 OpenAPI.TOKEN = session.data.access_token as string
         }
     }, [session.status])
@@ -61,6 +62,7 @@ const EditBuildingPage: NextPage = (props) => {
         })
     }
 
+    // @ts-ignore
     function callUpdateImage(image?: BuildingImageRetrieve, file: any) {
         if (!image) return
         setLoading(true)

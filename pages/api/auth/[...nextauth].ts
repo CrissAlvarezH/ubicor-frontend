@@ -1,4 +1,5 @@
-import { AuthService, Body_Auth_login, OAuthUserCreate } from "api_clients"
+// @ts-nocheck
+import { AuthService, Body_Auth_login } from "api_clients"
 import axios from "axios"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
@@ -60,14 +61,6 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, account, user }) {
             if (account && token.name && token.email) {
                 if (account.provider === "google") {
-                    // register if not exist on backend
-                    const userBody: OAuthUserCreate = {
-                        email: token.email
-                    }
-
-                    userBody.full_name = token.name,
-                    userBody.provider = account.provider
-
                     const idToken = account.id_token || "invalid"
                     const resp = await AuthService.authTokenSignIn({token_id: idToken, provider: "google"})
 

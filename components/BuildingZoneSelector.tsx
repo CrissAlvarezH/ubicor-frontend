@@ -30,6 +30,7 @@ const BuildingZoneSelector: FC<BuildingZoneSelectorProps> = ({university_slug, z
         setIsLoading(true)
 
         if (sessionStatus == "authenticated") {
+            // @ts-ignore
             OpenAPI.TOKEN = userData?.access_token as string
             BuildingZonesService.buildingZonesList(university_slug)
                 .then(resp => {

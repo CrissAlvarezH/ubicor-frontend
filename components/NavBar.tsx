@@ -40,6 +40,7 @@ const NavBar: FC<NavBarProps> = ({title, onSearchClick, onAddClick}) => {
                         variant="ghost" aria-label="Search" icon={<SearchIcon />}/>
                     
                     {
+                        // @ts-ignore
                         data?.scopes.includes(Scopes.CREATE_BUILDINGS) && (
                             <IconButton
                                 onClick={() => onAddClick && onAddClick()}
