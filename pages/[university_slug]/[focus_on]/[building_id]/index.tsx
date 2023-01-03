@@ -1,7 +1,7 @@
 import { Box, Heading, Badge, Container, VStack, Divider, useDisclosure } from "@chakra-ui/react";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import ImageSlider from "components/ImageSlider"
-import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve, OpenAPI } from "api_clients";
+import { UniversityList, UniversityService, BuildingsService, BuildingList, BuildingRetrieve, OpenAPI, ApiError } from "api_clients";
 import { zoneColorSchemas } from "utils/styles"
 import BuildingFloorList from "components/BuildingFloorList"
 import BackNavBar from "components/BackNavBar";
@@ -116,10 +116,25 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
     const { building_id } = params as { building_id: string }
-    const building = await BuildingsService.buildingsRetrieve(parseInt(building_id))
-    return {
-        props: {
-            building
+
+    try {
+        const building = await BuildingsService.buildingsRetrieve(parseInt(building_id))
+        return {
+            props: {
+                building
+            }
+        }
+    } catch (error) {
+        console.log("ERROR on get status props on buildings page", error)
+        if ((error as ApiError).status == 404) {
+            return {
+                notFound: true
+            }
+        } else {
+            // TODO show error on frontend
+            return {
+                props: {}
+            }
         }
     }
 }
