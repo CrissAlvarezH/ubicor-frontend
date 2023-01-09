@@ -49,7 +49,7 @@ const ImageSlider: FC<ImageSliderProps> = ({images}: ImageSliderProps) => {
                     onChangeIndex={setIndex}>
                     {
                         images.map((img: string, i: number) => (
-                            <Box key={i} h={64} backgroundColor="red">
+                            <Box key={i} h={{"base": 64, "md": 96, "lg": "500px"}} backgroundColor="red">
                                 <Image src={OpenAPI.BASE + img} objectFit="cover" w="100%" h="100%" alt="building image"/>
                             </Box>
                         ))

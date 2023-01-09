@@ -68,7 +68,7 @@ const BuildingPage: NextPage<BuildingPageProps> = ({building}: BuildingPageProps
 
             <Container maxW="7xl" p={0}>
                 {/* Building data */}
-                <Box p={4} bg="gray.100">
+                <Box p={4} bg="gray.100" shadow="md">
                     <Heading size="base" py={1} as="h1">{building.name}</Heading>
                     <Badge 
                         variant="solid" 
