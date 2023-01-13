@@ -19,7 +19,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    BASE: process.env.BUILD_TIME_API_BASE_URL || process.env.API_BASE_URL || "http://127.0.0.1:8000",
+    BASE: process.env.API_BASE_URL || "unset",
     VERSION: '0.1.0',
     WITH_CREDENTIALS: false,
     CREDENTIALS: 'include',
