@@ -33,7 +33,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-
+.idea
 .yarn
 
 .env
