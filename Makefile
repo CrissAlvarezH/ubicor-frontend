@@ -1,4 +1,7 @@
 
+dev:
+	docker run --rm --env-file .env.local -p 3000:3000 crissalvarezh/ubicor-frontend:latest
+
 build:
 	sh manage.sh build $(version)
 

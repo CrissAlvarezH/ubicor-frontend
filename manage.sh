@@ -7,9 +7,10 @@ action=$1
 build_img() {
   version=$1
   [ -z "$version" ] && version=0.1 && printf "\nset default version 0.1\n"
+  [ -z "$API_DOMAIN" ] && API_DOMAIN="https://api.ubicor.alvarezcristian.com" && printf "\nset default api domain https://api.ubicor.alvarezcristian.com\n\n"
 
   docker build \
-      --build-arg API_BASE_URL=http://api.ubicor.alvarezcristian.com \
+      --build-arg API_BASE_URL=$API_DOMAIN \
       --no-cache \
       -t crissalvarezh/ubicor-frontend:$version \
       .
