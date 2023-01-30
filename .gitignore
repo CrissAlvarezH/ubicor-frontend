@@ -36,5 +36,7 @@ yarn-error.log*
 .idea
 .yarn
 
+server-key.pem
+
 .env
 .env.production
