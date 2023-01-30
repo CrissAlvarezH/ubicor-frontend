@@ -18,19 +18,27 @@ build_img() {
 }
 
 
+push_img() {
+  version=$1
+  docker push crissalvarezh/ubicor-frontend:$version
+  docker push crissalvarezh/ubicor-frontend:latest
+}
+
+
 if [ "$action" = "build" ]; then
   build_img "$2"
 
 elif [ "$action" = "publish" ]; then
   build_img "$2"
+  push_img "$2"
 
-  docker push crissalvarezh/ubicor-frontend:$version
-  docker push crissalvarezh/ubicor-frontend:latest
+elif [ "$action" = "push-img" ]; then
+  push_img "$2"
 
 elif [ "$action" = "deploy" ]; then
 
   ssh -o StrictHostKeyChecking=no \
       -i ./server-key.pem ec2-user@alvarezcristian.com \
-      "cd /home/ec3-user/cristian-server-projects && make reload service=ubicor-frontend"
+      "cd /home/ec2-user/cristian-projects-server && make reload service=ubicor-frontend"
 
 fi
