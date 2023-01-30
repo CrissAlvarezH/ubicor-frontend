@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - name: Setup env vars
+        run: |
+          printf "${{secrets.BUILD_ENVIRONMENT_VARIABLES}} > .env.production
       - name: Build the Docker image
         run: |
           sh manage.sh build
